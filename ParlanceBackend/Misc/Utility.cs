@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace ParlanceBackend.Misc
 {
@@ -9,9 +10,9 @@ namespace ParlanceBackend.Misc
             string gitRepositoryDirectory = $"{rootPath}/repos/{slug}";
             try
             {
-                if (!System.IO.Directory.Exists(gitRepositoryDirectory))
+                if (!Directory.Exists(gitRepositoryDirectory))
                 {
-                    System.IO.Directory.CreateDirectory(gitRepositoryDirectory);
+                    Directory.CreateDirectory(gitRepositoryDirectory);
                 }
             }
             catch(Exception e)
