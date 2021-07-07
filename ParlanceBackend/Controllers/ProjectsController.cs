@@ -92,7 +92,7 @@ namespace ParlanceBackend.Controllers
                     Branch = project.Branch,
                 };
 
-                projectPrivate.Clone();
+                projectPrivate.Clone(_parlanceConfiguration.Value.GitRepository);
 
                 _context.Projects.Add(projectPrivate);
                 await _context.SaveChangesAsync();
