@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/ParlanceBackent/bin/Debug/net5.0/ParlanceBackend.dll",
+            "program": "${workspaceFolder}/ParlanceBackend/bin/Debug/net5.0/ParlanceBackend.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
