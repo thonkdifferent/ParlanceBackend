@@ -1,9 +1,8 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParlanceBackend", "ParlanceBackent\ParlanceBackend.csproj", "{DF755D06-2DCF-4D9C-8235-D9D744407DAB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParlanceBackend", "ParlanceBackend\ParlanceBackend.csproj", "{DF755D06-2DCF-4D9C-8235-D9D744407DAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
