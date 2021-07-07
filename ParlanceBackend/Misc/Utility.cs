@@ -1,6 +1,6 @@
 using System;
 
-namespace ParlanceBackend
+namespace ParlanceBackend.Misc
 {
     public class Utility
     {
@@ -18,12 +18,8 @@ namespace ParlanceBackend
             {
                 Console.WriteLine($"Something went wrong {e.Message}.\n Stacktrace {e.StackTrace}");
             }
-
+            
             return gitRepositoryDirectory;
-        }
-        public static string GetSlugFromName(string name)
-        {
-            return name.ToLower().Replace(" ", "-");
         }
     }
 }

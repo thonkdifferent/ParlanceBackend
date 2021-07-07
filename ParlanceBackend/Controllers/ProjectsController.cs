@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ParlanceBackend.Data;
+using ParlanceBackend.Misc;
 using ParlanceBackend.Models;
 
 namespace ParlanceBackend.Controllers
@@ -27,7 +28,7 @@ namespace ParlanceBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
         {
-            return await _context.Projects.Select(x => ProjectPrivate.CreateProject(x)).ToListAsync();
+            return await _context.Projects.Select(x => ProjectPrivate.ToPublicProject(x)).ToListAsync();
         }
 
         // GET: api/Projects/5
@@ -41,7 +42,7 @@ namespace ParlanceBackend.Controllers
                 return NotFound();
             }
 
-            return ProjectPrivate.CreateProject(project);
+            return ProjectPrivate.ToPublicProject(project);
         }
 
         // // PUT: api/Projects/5
@@ -89,18 +90,16 @@ namespace ParlanceBackend.Controllers
                 ProjectPrivate projectPrivate = new ProjectPrivate {
                     Name = project.Name,
                     GitCloneUrl = project.GitCloneUrl,
-                    Branch = project.Branch,
-                    Slug = Utility.GetSlugFromName(project.Name),
-                    GitDir = Utility.GetDirectoryFromSlug(Utility.GetSlugFromName(project.Name),_parlanceConfiguration.Value.GitRepository)//TODO: make this cleaner
+                    Branch = project.Branch
                 };
 
-                projectPrivate.Clone();
+                projectPrivate.Clone(_parlanceConfiguration.Value.GitRepository);
 
                 _context.Projects.Add(projectPrivate);
                 await _context.SaveChangesAsync();
                 
                 return CreatedAtAction("GetProject", new { name = project.Name }, project);
-            } catch (Exception e) {
+            } catch (Exception) {
                 //TODO: better error???
                 return BadRequest();
             }
