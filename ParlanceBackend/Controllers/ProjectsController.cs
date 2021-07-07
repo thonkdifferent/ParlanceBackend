@@ -90,9 +90,11 @@ namespace ParlanceBackend.Controllers
                     Name = project.Name,
                     GitCloneUrl = project.GitCloneUrl,
                     Branch = project.Branch,
+                    Slug = Utility.GetSlugFromName(project.Name),
+                    GitDir = Utility.GetDirectoryFromSlug(Utility.GetSlugFromName(project.Name),_parlanceConfiguration.Value.GitRepository)//TODO: make this cleaner
                 };
 
-                projectPrivate.Clone(_parlanceConfiguration.Value.GitRepository);
+                projectPrivate.Clone();
 
                 _context.Projects.Add(projectPrivate);
                 await _context.SaveChangesAsync();
