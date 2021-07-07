@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using ParlanceBackend.Data;
 using ParlanceBackend.Models;
 
@@ -15,10 +16,11 @@ namespace ParlanceBackend.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly ProjectContext _context;
-
-        public ProjectsController(ProjectContext context)
+        private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
+        public ProjectsController(ProjectContext context, IOptions<ParlanceConfiguration> parlanceConfiguration)
         {
             _context = context;
+            _parlanceConfiguration = parlanceConfiguration;
         }
 
         // GET: api/Projects
@@ -87,7 +89,7 @@ namespace ParlanceBackend.Controllers
                 ProjectPrivate projectPrivate = new ProjectPrivate {
                     Name = project.Name,
                     GitCloneUrl = project.GitCloneUrl,
-                    Branch = project.Branch
+                    Branch = project.Branch,
                 };
 
                 projectPrivate.Clone();

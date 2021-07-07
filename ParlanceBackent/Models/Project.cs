@@ -19,7 +19,7 @@ namespace ParlanceBackend.Models
             //Clone the repository
 
             //Generate a slug from the project name
-            this.Slug = Name.ToLower().Replace(" ", "-");
+            Slug = Name.ToLower().Replace(" ", "-");
         }
         
 

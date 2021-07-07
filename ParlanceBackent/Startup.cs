@@ -16,7 +16,6 @@ namespace ParlanceBackend
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            Configuration.GetSection("Parlance");
         }
 
         public IConfiguration Configuration { get; }
@@ -31,7 +30,7 @@ namespace ParlanceBackend
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ParlanceBackend", Version = "v1" });
             });
-            services.Configure<ParlanceConfiguration>(Configuration.GetSection("gitDirectory"));
+            services.Configure<ParlanceConfiguration>(Configuration.GetSection("Parlance"));
             services.AddDbContext<ProjectContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ProjectContext")));
         }
