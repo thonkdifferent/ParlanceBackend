@@ -6,6 +6,10 @@ class TranslationTextEntry extends React.Component {
         super(props);
     }
 
+    componentDidMount() {
+        if (this.props.index === 0) this.translatedTextArea.focus();
+    }
+
     getTitleString() {
         let pluralForms = this.props.translation.msgstr.length;
         if (pluralForms === 1) {
@@ -17,6 +21,13 @@ class TranslationTextEntry extends React.Component {
         }
     }
 
+    renderChecks() {
+        return this.props.translation.checks[this.props.index].map(check => <div className={Styles.FailingCheck}>
+            <span className={Styles.CheckTitle}>{check.title}</span>
+            <span className={Styles.CheckMessage}>{check.message}</span>
+        </div>)
+    }
+
     render() {
         let changeEvent = (e) => {
             this.props.poManager.setTranslation(this.props.selection.context, this.props.selection.key, this.props.index, e.target.value)
@@ -24,7 +35,8 @@ class TranslationTextEntry extends React.Component {
 
         return <>
             <span className={Styles.Introduction}>{this.getTitleString()}</span>
-            <textarea value={this.props.translation.msgstr[this.props.index]} className={Styles.TranslatedText} onChange={changeEvent} />
+            <textarea ref={element => this.translatedTextArea = element} value={this.props.translation.msgstr[this.props.index]} className={Styles.TranslatedText} onChange={changeEvent} />
+            {this.renderChecks()}
         </>
     }
 }

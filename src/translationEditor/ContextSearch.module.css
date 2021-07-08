@@ -1,0 +1,28 @@
+.ContextSearch {
+    position: sticky;
+    top: 0px;
+    z-index: 1000;
+
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 3px 3px;
+    padding: 9px;
+
+    background-color: rgb(40, 40, 40);
+}
+
+.SearchBox {
+    grid-column-start: 1;
+    grid-column-end: 3;
+
+    border: none;
+    border-top: 1px solid rgb(80, 80, 80);
+    border-bottom: 1px solid rgb(80, 80, 80);
+    background-color: rgb(40, 40, 40);
+    color: white;
+
+    margin-left: -9px;
+    margin-right: -9px;
+    margin-bottom: -9px;
+    padding: 9px;
+}

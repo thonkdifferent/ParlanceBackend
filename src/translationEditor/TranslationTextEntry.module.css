@@ -12,3 +12,15 @@
     padding: 3px;
     text-transform: uppercase;
 }
+
+.FailingCheck {
+    background-color: rgb(255, 100, 0);
+    color: black;
+    padding: 9px;
+    display: grid;
+}
+
+.CheckTitle {
+    text-transform: uppercase;
+    font-weight: bold;
+}

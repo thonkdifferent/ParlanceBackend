@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 
 import Style from "./Context.module.css";
-import MessageText from '../components/MessageText';
+import TranslationItem from './TranslationItem';
 
 class Context extends React.Component {
     constructor(props) {
@@ -24,28 +24,10 @@ class Context extends React.Component {
         //Grab the po file from the server. Here we'll hardcode it.
     }
 
-    isSelected(key) {
-        return this.props.selection?.context === this.props.context && this.props.selection?.key == key;
-    }
-
     render() {
         return <>
             <div className={Style.ContextHeader}>{this.props.context}</div>
-            {this.props.poManager.getKeys(this.props.context).map(key => {
-                let translation = this.props.poManager.getTranslation(this.props.context, key);
-
-                let clickEvent = () => {
-                    this.props.onSelect({
-                        context: this.props.context,
-                        key: key
-                    })
-                }
-
-                return <div className={`${Style.TranslationItem} ${this.isSelected(key) ? Style.Selected : ""}`} onClick={clickEvent} >
-                    <MessageText className={Style.SourceText} text={translation.msgid} />
-                    <MessageText className={Style.TranslationText} text={translation.msgstr[0]} />
-                </div>
-            })}
+            {this.props.poManager.getKeys(this.props.context).map(key => <TranslationItem searchQuery={this.props.searchQuery} flags={this.props.flags} poManager={this.props.poManager} onSelect={this.props.onSelect} context={this.props.context} translationKey={key} selection={this.props.selection} />)}
         </>
     }
 }

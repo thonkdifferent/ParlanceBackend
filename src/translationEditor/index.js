@@ -7,6 +7,9 @@ import {
     withRouter,
     Prompt
 } from "react-router-dom";
+import hotkeys from "react-keyboard-shortcuts";
+
+import ContextSearch from './ContextSearch';
 
 import PoManager from "./PoManager";
 import Styles from "./index.module.css";
@@ -19,7 +22,11 @@ class TranslationEditor extends React.Component {
 
         this.state = {
             po: null,
-            selection: null
+            selection: null,
+            searchQuery: "",
+            flags: {
+                unfinishedOnly: false
+            }
         }
     }
 
@@ -719,6 +726,38 @@ class TranslationEditor extends React.Component {
             po
         });
     }
+
+    hot_keys = {
+        'ctrl+s': {
+            priority: 1,
+            handler: (e) => {
+                alert("control S")
+                e.preventDefault();
+            }
+        },
+        'alt+down': {
+            priority: 1,
+            handler: (e) => {
+                e.preventDefault();
+                this.setState(oldState => {
+                    return {
+                        selection: oldState.po.nextSelection(oldState.selection?.context, oldState.selection?.key)
+                    }
+                });
+            }
+        },
+        'alt+up': {
+            priority: 1,
+            handler: (e) => {
+                e.preventDefault();
+                this.setState(oldState => {
+                    return {
+                        selection: oldState.po.previousSelection(oldState.selection?.context, oldState.selection?.key)
+                    }
+                });
+            }
+        }
+    }
     
     select(selection) {
         this.setState({
@@ -726,24 +765,37 @@ class TranslationEditor extends React.Component {
         });
     }
 
+    search(query) {
+        this.setState({
+            searchQuery: query
+        })
+    }
+
+    setFlags(flags) {
+        this.setState({
+            flags
+        })
+    }
+
     render() {
         if (this.state.po) {
-            let params = this.props.match.params;
             if (this.state.po.hasError) {
                 return "There was an error loading the translation file.";
             } else {
                 return <div className={Styles.EditorRoot}>
-                    <div className={Styles.ContextList}>
-                        {this.state.po.contexts().map(context => <Context context={context} poManager={this.state.po} selection={this.state.selection} onSelect={this.select.bind(this)} />)}
+                    <div className={Styles.ContextListWrapper}>
+                        <ContextSearch searchQuery={this.state.searchQuery} onSearch={this.search.bind(this)} flags={this.state.flags} onSetFlags={this.setFlags.bind(this)} />
+                        <div className={Styles.ContextList}>
+                            {this.state.po.contexts().map(context => <Context searchQuery={this.state.searchQuery} flags={this.state.flags} context={context} poManager={this.state.po} selection={this.state.selection} onSelect={this.select.bind(this)} />)}
+                        </div>
                     </div>
                     <TranslationArea selection={this.state.selection} poManager={this.state.po} />
                 </div>
             }
-            return `Translation Editor is translating ${params.project}/${params.subproject} @ ${params.language}`;
         } else {
             return "Hang on...";
         }
     }
 }
 
-export default withRouter(TranslationEditor);
+export default withRouter(hotkeys(TranslationEditor));

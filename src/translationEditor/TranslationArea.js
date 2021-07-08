@@ -34,10 +34,6 @@ class TranslationArea extends React.Component {
         if (this.props.selection) {
             let translation = this.props.poManager.getTranslation(this.props.selection.context, this.props.selection.key);
 
-            let changeEvent = (e) => {
-                this.props.poManager.setTranslation(this.props.selection.context, this.props.selection.key, 0, e.target.value)
-            }
-
             return <>
                 <div className={Styles.SourceText}>{translation.msgid}</div>
                 {this.renderTextEntries(translation)}

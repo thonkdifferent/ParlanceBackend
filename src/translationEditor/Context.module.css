@@ -2,32 +2,7 @@
     position: sticky;
     top: 0px;
     padding: 3px;
-    text-transform: uppercase;
-    font-weight: bold;
+    
     background: rgb(60, 60, 60);
     z-index: 10;
-}
-
-.TranslationItem {
-    display: grid;
-    padding: 9px;
-
-    mask-image: linear-gradient(to right, black 80%, transparent 100%);
-    max-width: 400px;
-}
-
-.SourceText {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.TranslationText {
-    opacity: 0.5;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.Selected {
-    background-color: rgb(0, 100, 100);
-    color: white;
 }
