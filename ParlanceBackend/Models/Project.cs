@@ -62,8 +62,7 @@ namespace ParlanceBackend.Models
     
     public class Project
     {
-        private string GitRepositoryPath;
-
+        IOptions<ParlanceConfiguration> configuration;
         public Project() {}
 
         public Project(IOptions<ParlanceConfiguration> configuration) {
@@ -71,7 +70,7 @@ namespace ParlanceBackend.Models
         }
 
         public void SetConfiguration(IOptions<ParlanceConfiguration> configuration) {
-            this.GitRepositoryPath = configuration.Value.GitRepository;
+            this.configuration = configuration;
         }
 
         [Key]
@@ -81,7 +80,7 @@ namespace ParlanceBackend.Models
 
         public JsonFile.Subproject[] Subprojects {
             get {
-                string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(Name), this.GitRepositoryPath);
+                string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(Name), this.configuration.Value.GitRepository);
                 string jsonFile = $"{repoLocation}/.parlance.json";
                 if (!File.Exists(jsonFile)) return new JsonFile.Subproject[]{};
 
@@ -89,6 +88,10 @@ namespace ParlanceBackend.Models
                 {
                     PropertyNameCaseInsensitive = true
                 });
+
+                foreach (JsonFile.Subproject subproj in spec.Subprojects) {
+                    subproj.SetConfiguration(this.configuration);
+                }
 
                 return spec.Subprojects.ToArray(); //.Select(x => x.Slug).ToArray();
             }
