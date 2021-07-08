@@ -51,18 +51,18 @@ namespace ParlanceBackend.Models
             Directory.Delete(repoLocation, true);
         }
 
-        public static Project ToPublicProject(ProjectPrivate project, IOptions<ParlanceConfiguration> configuration) =>
+        public Project ToPublicProject(IOptions<ParlanceConfiguration> configuration) =>
         new Project(configuration)
         {
-            Name = project.Name,
-            GitCloneUrl = project.GitCloneUrl,
-            Branch = project.Branch
+            Name = this.Name,
+            GitCloneUrl = this.GitCloneUrl,
+            Branch = this.Branch
         };
     }
     
     public class Project
     {
-        IOptions<ParlanceConfiguration> configuration;
+        ParlanceConfiguration configuration;
         public Project() {}
 
         public Project(IOptions<ParlanceConfiguration> configuration) {
@@ -70,7 +70,10 @@ namespace ParlanceBackend.Models
         }
 
         public void SetConfiguration(IOptions<ParlanceConfiguration> configuration) {
-            this.configuration = configuration;
+            this.configuration = new ParlanceConfiguration
+            {
+                GitRepository = configuration.Value.GitRepository
+            };
         }
 
         [Key]
@@ -80,9 +83,9 @@ namespace ParlanceBackend.Models
 
         public JsonFile.Subproject[] Subprojects {
             get {
-                string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(Name), this.configuration.Value.GitRepository);
+                string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(Name), this.configuration.GitRepository);
                 string jsonFile = $"{repoLocation}/.parlance.json";
-                if (!File.Exists(jsonFile)) return new JsonFile.Subproject[]{};
+                if (!File.Exists(jsonFile)) return Array.Empty<JsonFile.Subproject>();
 
                 JsonFile.Root spec = JsonSerializer.Deserialize<JsonFile.Root>(File.ReadAllText(jsonFile), new JsonSerializerOptions
                 {
@@ -90,7 +93,7 @@ namespace ParlanceBackend.Models
                 });
 
                 foreach (JsonFile.Subproject subproj in spec.Subprojects) {
-                    subproj.SetConfiguration(this.configuration);
+                    subproj.SetConfiguration(configuration);
                 }
 
                 return spec.Subprojects.ToArray(); //.Select(x => x.Slug).ToArray();

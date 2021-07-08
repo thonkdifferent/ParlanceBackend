@@ -21,6 +21,6 @@ namespace ParlanceBackend.TranslationFiles {
 
     class TranslationFile {
         public string DestinationLanguage { get; set; }
-        public Message[] messages { get; set; }
+        public Message[] Messages { get; set; }
     }
 }

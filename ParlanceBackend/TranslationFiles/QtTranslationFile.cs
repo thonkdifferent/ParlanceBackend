@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace ParlanceBackend.TranslationFiles {
@@ -12,7 +13,7 @@ namespace ParlanceBackend.TranslationFiles {
         }
         
         static byte[] Save(TranslationFile file) {
-            
+            throw new NotImplementedException();
         }
     }
 }

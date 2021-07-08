@@ -1,5 +1,5 @@
 using System.IO;
-
+using System;
 namespace ParlanceBackend.TranslationFiles {
     class WebExtensionsJsonTranslationFile {
         static TranslationFile LoadFromFile(string FileName) {
@@ -12,7 +12,7 @@ namespace ParlanceBackend.TranslationFiles {
         }
         
         static byte[] Save(TranslationFile file) {
-            
+            throw new NotImplementedException();
         }
     }
 }

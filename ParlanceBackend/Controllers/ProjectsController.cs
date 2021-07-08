@@ -28,7 +28,7 @@ namespace ParlanceBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
         {
-            return await _context.Projects.Select(x => ProjectPrivate.ToPublicProject(x, _parlanceConfiguration)).ToListAsync();
+            return await _context.Projects.Select(x => x.ToPublicProject(_parlanceConfiguration)).ToListAsync();
         }
 
         // GET: api/Projects/5
@@ -42,7 +42,20 @@ namespace ParlanceBackend.Controllers
                 return NotFound();
             }
 
-            return ProjectPrivate.ToPublicProject(project, _parlanceConfiguration);
+            return project.ToPublicProject(_parlanceConfiguration);
+        }
+
+        [HttpGet("{name}/{subproject}/{language}")]
+        public async Task<ActionResult> GetTranslationFile(string name, string subproject, string language)
+        {
+            var projectInternal = await _context.Projects.FindAsync(name);
+
+            if (projectInternal == null)
+            {
+                return NotFound();
+            }
+
+            var project = projectInternal.ToPublicProject(_parlanceConfiguration);
         }
 
         // // PUT: api/Projects/5
@@ -88,7 +101,8 @@ namespace ParlanceBackend.Controllers
             //TODO: Ensure the user is a superuser
             project.SetConfiguration(_parlanceConfiguration);
             try {
-                ProjectPrivate projectPrivate = new ProjectPrivate {
+                ProjectPrivate projectPrivate = new()
+                {
                     Name = project.Name,
                     GitCloneUrl = project.GitCloneUrl,
                     Branch = project.Branch
