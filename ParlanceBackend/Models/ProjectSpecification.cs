@@ -12,6 +12,8 @@ namespace ParlanceBackend.Models
             public string Type { get; set; }
 
             public string Path { get; set; }
+
+            public string BaseLang { get; set; }
         }
 
         public class Root
