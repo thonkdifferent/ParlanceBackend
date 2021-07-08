@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using ParlanceBackend.Misc;
 
 namespace ParlanceBackend.Models
 {
@@ -14,6 +15,8 @@ namespace ParlanceBackend.Models
             public string Path { get; set; }
 
             public string BaseLang { get; set; }
+
+            public string Slug { get => Utility.Slugify(Name);}
         }
 
         public class Root

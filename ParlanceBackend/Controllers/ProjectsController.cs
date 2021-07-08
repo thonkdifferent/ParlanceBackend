@@ -28,7 +28,7 @@ namespace ParlanceBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
         {
-            return await _context.Projects.Select(x => ProjectPrivate.ToPublicProject(x)).ToListAsync();
+            return await _context.Projects.Select(x => ProjectPrivate.ToPublicProject(x, _parlanceConfiguration)).ToListAsync();
         }
 
         // GET: api/Projects/5
@@ -42,7 +42,7 @@ namespace ParlanceBackend.Controllers
                 return NotFound();
             }
 
-            return ProjectPrivate.ToPublicProject(project);
+            return ProjectPrivate.ToPublicProject(project, _parlanceConfiguration);
         }
 
         // // PUT: api/Projects/5
@@ -86,6 +86,7 @@ namespace ParlanceBackend.Controllers
         public async Task<ActionResult<Project>> PostProject(Project project)
         {
             //TODO: Ensure the user is a superuser
+            project.SetConfiguration(_parlanceConfiguration);
             try {
                 ProjectPrivate projectPrivate = new ProjectPrivate {
                     Name = project.Name,
@@ -93,7 +94,7 @@ namespace ParlanceBackend.Controllers
                     Branch = project.Branch
                 };
 
-                await projectPrivate.Clone(_parlanceConfiguration.Value.GitRepository);
+                await projectPrivate.Clone(_parlanceConfiguration);
 
                 _context.Projects.Add(projectPrivate);
                 await _context.SaveChangesAsync();
@@ -105,24 +106,24 @@ namespace ParlanceBackend.Controllers
             }
         }
 
-        // // DELETE: api/Projects/5
-        // [HttpDelete("{name}")]
-        // public async Task<IActionResult> DeleteProject(string name)
-        // {
-        //     //TODO: Ensure the user is a superuser
-        //     //For now, don't allow deleting projects
-        //     return BadRequest();
-        //     var project = await _context.Projects.FindAsync(name);
-        //     if (project == null)
-        //     {
-        //         return NotFound();
-        //     }
+        // DELETE: api/Projects/5
+        [HttpDelete("{name}")]
+        public async Task<IActionResult> DeleteProject(string name)
+        {
+            //TODO: Ensure the user is a superuser
+            
+            ProjectPrivate project = await _context.Projects.FindAsync(name);
+            if (project == null)
+            {
+                return NotFound();
+            }
 
-        //     _context.Projects.Remove(project);
-        //     await _context.SaveChangesAsync();
+            project.Remove(_parlanceConfiguration);
+            _context.Projects.Remove(project);
+            await _context.SaveChangesAsync();
 
-        //     return NoContent();
-        // }
+            return NoContent();
+        }
 
         private bool ProjectExists(string name)
         {
