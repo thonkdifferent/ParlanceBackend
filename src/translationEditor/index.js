@@ -15,6 +15,7 @@ import PoManager from "./PoManager";
 import Styles from "./index.module.css";
 import Context from "./Context";
 import TranslationArea from './TranslationArea';
+import TranslationItem from './TranslationItem';
 
 class TranslationEditor extends React.Component {
     constructor(props) {
@@ -741,7 +742,7 @@ class TranslationEditor extends React.Component {
                 e.preventDefault();
                 this.setState(oldState => {
                     return {
-                        selection: oldState.po.nextSelection(oldState.selection?.context, oldState.selection?.key)
+                        selection: this.getNextItem()
                     }
                 });
             }
@@ -752,7 +753,7 @@ class TranslationEditor extends React.Component {
                 e.preventDefault();
                 this.setState(oldState => {
                     return {
-                        selection: oldState.po.previousSelection(oldState.selection?.context, oldState.selection?.key)
+                        selection: this.getPreviousItem()
                     }
                 });
             }
@@ -777,6 +778,28 @@ class TranslationEditor extends React.Component {
         })
     }
 
+    getNextItem() {
+        let nextSelection = this.state.selection;
+        let firstSelection = this.state.selection;
+        do {
+            nextSelection = this.state.po.nextSelection(nextSelection?.context, nextSelection?.key);
+            if (JSON.stringify(nextSelection) === JSON.stringify(firstSelection)) return firstSelection;
+        } while (!TranslationItem.shouldRender(this.state.po, nextSelection.context, nextSelection.key, this.state.searchQuery, this.state.flags));
+
+        return nextSelection;
+    }
+
+    getPreviousItem() {
+        let previousSelection = this.state.selection;
+        let firstSelection = this.state.selection;
+        do {
+            previousSelection = this.state.po.previousSelection(previousSelection?.context, previousSelection?.key);
+            if (JSON.stringify(previousSelection) === JSON.stringify(firstSelection)) return firstSelection;
+        } while (!TranslationItem.shouldRender(this.state.po, previousSelection.context, previousSelection.key, this.state.searchQuery, this.state.flags));
+
+        return previousSelection;
+    }
+
     render() {
         if (this.state.po) {
             if (this.state.po.hasError) {
@@ -786,7 +809,7 @@ class TranslationEditor extends React.Component {
                     <div className={Styles.ContextListWrapper}>
                         <ContextSearch searchQuery={this.state.searchQuery} onSearch={this.search.bind(this)} flags={this.state.flags} onSetFlags={this.setFlags.bind(this)} />
                         <div className={Styles.ContextList}>
-                            {this.state.po.contexts().map(context => <Context searchQuery={this.state.searchQuery} flags={this.state.flags} context={context} poManager={this.state.po} selection={this.state.selection} onSelect={this.select.bind(this)} />)}
+                            {this.state.po.contexts().map(context => <Context key={context} searchQuery={this.state.searchQuery} flags={this.state.flags} context={context} poManager={this.state.po} selection={this.state.selection} onSelect={this.select.bind(this)} />)}
                         </div>
                     </div>
                     <TranslationArea selection={this.state.selection} poManager={this.state.po} />

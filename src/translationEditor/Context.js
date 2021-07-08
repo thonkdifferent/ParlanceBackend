@@ -27,7 +27,7 @@ class Context extends React.Component {
     render() {
         return <>
             <div className={Style.ContextHeader}>{this.props.context}</div>
-            {this.props.poManager.getKeys(this.props.context).map(key => <TranslationItem searchQuery={this.props.searchQuery} flags={this.props.flags} poManager={this.props.poManager} onSelect={this.props.onSelect} context={this.props.context} translationKey={key} selection={this.props.selection} />)}
+            {this.props.poManager.getKeys(this.props.context).map(key => <TranslationItem key={key} searchQuery={this.props.searchQuery} flags={this.props.flags} poManager={this.props.poManager} onSelect={this.props.onSelect} context={this.props.context} translationKey={key} selection={this.props.selection} />)}
         </>
     }
 }

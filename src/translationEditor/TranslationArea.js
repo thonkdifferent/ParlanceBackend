@@ -26,7 +26,7 @@ class TranslationArea extends React.Component {
 
     renderTextEntries(translation) {
         return translation.msgstr.map((item, index) => {
-            return <TranslationTextEntry translation={translation} poManager={this.props.poManager} selection={this.props.selection} index={index} />
+            return <TranslationTextEntry key={index} translation={translation} poManager={this.props.poManager} selection={this.props.selection} index={index} />
         });
     }
 

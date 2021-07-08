@@ -27,16 +27,16 @@ class TranslationItem extends React.Component {
         }
     }
 
-    shouldRender(translation) {
+    static shouldRender(poManager, context, key, searchQuery, flags) {
         //Figure out if we should render
-        if (this.isSelected()) return true;
+        let translation = poManager.getTranslation(context, key);
 
-        let searchQuery = this.props.searchQuery.toLowerCase();
+        searchQuery = searchQuery.toLowerCase();
         if (searchQuery !== "") {
             if (!translation.msgid.toLowerCase().includes(searchQuery) && !translation.msgstr.map(str => str.toLowerCase().includes(searchQuery)).includes(true)) return false;
         }
 
-        if (this.props.flags.unfinishedOnly) {
+        if (flags.unfinishedOnly) {
             if (!translation.msgstr.includes("")) return false;
         }
 
@@ -46,7 +46,7 @@ class TranslationItem extends React.Component {
     render() {
         let translation = this.props.poManager.getTranslation(this.props.context, this.props.translationKey);
 
-        if (!this.shouldRender(translation)) return null;
+        if (!TranslationItem.shouldRender(this.props.poManager, this.props.context, this.props.translationKey, this.props.searchQuery, this.props.flags) && !this.isSelected()) return null;
 
         let clickEvent = () => {
             this.props.onSelect({

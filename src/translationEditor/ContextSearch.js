@@ -15,7 +15,7 @@ class ContextSearch extends React.Component {
     render() {
         return <div className={Style.ContextSearch}>
             <input id="unfinishedOnly" type="checkbox" value={this.props.flags.unfinishedOnly} onChange={this.setFlag.bind(this, "unfinishedOnly")} />
-            <label for="unfinishedOnly">Only show unfinished translations</label>
+            <label htmlFor="unfinishedOnly">Only show unfinished translations</label>
 
             <input className={Style.SearchBox} type="text" placeholder="Search" value={this.props.searchQuery} onChange={this.searchBoxChanged.bind(this)} />
         </div>
