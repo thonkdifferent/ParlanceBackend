@@ -14,6 +14,8 @@ namespace ParlanceBackend.TranslationFiles {
 
         public string Context { get; set; }
 
+        public string Comment { get; set; }
+
         public string[] Translation { get; set; }
     }
 
