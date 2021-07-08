@@ -1,0 +1,21 @@
+.TranslationAreaRoot {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.TranslationAreaInnerRoot {
+    display: flex;
+    flex-direction: column;
+    
+    position: sticky;
+    top: 0px;
+
+    height: 100vh;
+}
+
+.SourceText {
+    padding: 9px;
+    min-height: 100px;
+    background-color: rgb(60, 60, 60);
+}

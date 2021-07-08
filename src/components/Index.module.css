@@ -1,0 +1,19 @@
+.Index {
+    display: flex;
+    flex-direction: column;
+}
+
+.Header {
+    font-weight: normal;
+    margin: 9px;
+}
+
+.IndexItem {
+    padding: 9px;
+    display: flex;
+    
+}
+
+.IndexItem:hover {
+    background-color: rgb(60, 60, 60);
+}
