@@ -76,7 +76,6 @@ namespace ParlanceBackend.Models
             };
         }
 
-        [Key]
         public string Name { get; set; }
         public string GitCloneUrl { get; set; }
         public string Branch { get; set; }

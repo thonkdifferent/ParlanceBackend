@@ -23,36 +23,9 @@ namespace ParlanceBackend.Misc
         }
         private static string Parse(string input)
         {
-            bool startVarParse = false;
-            string output = "";
-            string varName = "";
-            for(int i=0;i<input.Length;i++)
-            {
-                if(input[i]=='{' && !startVarParse)
-                {
-                    startVarParse = true;
-                    continue;
-                }
-                if(startVarParse)
-                {
-                    if(input[i]=='}')
-                    {
-                        output += varName switch
-                        {
-                            "CONFIG_FOLDER" => Constants.CONFIGURATION_FOLDER,
-                            "USER_FOLDER" => Constants.USER_FOLDER,
-                            "DOCS_FOLDER" => Constants.DOCUMENTS_FOLDER,
-                            _ => $"{{{varName}}}",
-                        };
-                        varName = "";
-                        continue;
-                    }
-                    else
-                        varName += input[i];
-                }
-                output += input[i];
-            }
-            return output;
+            return input.Replace("{UserFolder}", Constants.USER_FOLDER)
+                .Replace("{ConfigFolder}", Constants.CONFIGURATION_FOLDER)
+                .Replace("{DocsFolder}", Constants.DOCUMENTS_FOLDER);
         }
     }
 }
