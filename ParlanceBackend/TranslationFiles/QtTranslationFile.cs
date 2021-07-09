@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 namespace ParlanceBackend.TranslationFiles {
     class QtTranslationFile {
-        static TranslationFile LoadFromFile(string FileName) {
+        public static TranslationFile LoadFromFile(string FileName) {
             return LoadFromBytes(File.ReadAllBytes(FileName));
         }
 
@@ -32,6 +32,7 @@ namespace ParlanceBackend.TranslationFiles {
                         Message message = new();
                         List<Location> locations = new();
                         List<string> translations = new();
+                        //bool isOverridden = false;
                         foreach (XmlNode messageMeta in childNode.ChildNodes)
                         {
                             switch(messageMeta.Name)
@@ -59,7 +60,9 @@ namespace ParlanceBackend.TranslationFiles {
                                         translations.Add(messageMeta.Value);
                                     }
                                     break;
-
+                                case "comment":
+                                    message.Comment = messageMeta.Value;
+                                    break;
                             }
                         }
                         message.Location = locations.ToArray();
@@ -77,7 +80,7 @@ namespace ParlanceBackend.TranslationFiles {
             return translationFile;
         }
         
-        static byte[] Save(TranslationFile file) {
+        public static byte[] Save(TranslationFile file) {
             throw new NotImplementedException();
         }
     }

@@ -18,8 +18,9 @@ namespace ParlanceBackend.TranslationFiles {
         public string Context { get; set; }
 #nullable enable
         public Location[]? Location { get; set; }
+
+        public string? Comment { get; set; }
 #nullable disable
-        public string Comment { get; set; }
 
         public Translation Translation { get; set; }
     }
