@@ -16,7 +16,7 @@ namespace ParlanceBackend.TranslationFiles {
             document.Load(xml);
 
             TranslationFile translationFile = new();
-            translationFile.DestinationLanguage = document.GetElementsByTagName("TS").Item(0).Attributes.GetNamedItem("sourcelanguage").Value;
+            translationFile.DestinationLanguage = document.GetElementsByTagName("TS").Item(0).Attributes.GetNamedItem("language").Value;
 
             List<Message> messages = new();
             XmlNodeList contexts = document.GetElementsByTagName("context");
