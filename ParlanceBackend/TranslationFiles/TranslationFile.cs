@@ -1,16 +1,16 @@
 using System.IO;
 
 namespace ParlanceBackend.TranslationFiles {
-    class Location {
+    public class Location {
         public string File { get; set; }
         public int Line { get; set; }
     }
-    class Translation
+    public class Translation
     {
         public bool Unfinished { get; set; }
         public string[] Content { get; set; }
     }
-    class Message {
+    public class Message {
         public string Source { get; set; }
 
         public string Key { get; set; }
@@ -25,7 +25,7 @@ namespace ParlanceBackend.TranslationFiles {
         public Translation Translation { get; set; }
     }
 
-    class TranslationFile {
+    public class TranslationFile {
         public string DestinationLanguage { get; set; }
         public Message[] Messages { get; set; }
     }

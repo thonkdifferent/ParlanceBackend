@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using ParlanceBackend.Misc;
 using Microsoft.Extensions.Options;
@@ -16,8 +17,8 @@ namespace ParlanceBackend.Models
         public class Subproject
         {
             public string parentProjName;
-            private ParlanceConfiguration configuration;
-            public void SetConfiguration(ParlanceConfiguration configuration) {
+            private IOptions<ParlanceConfiguration> configuration;
+            public void SetConfiguration(IOptions<ParlanceConfiguration> configuration) {
                 this.configuration = configuration;
             }
 
@@ -31,14 +32,20 @@ namespace ParlanceBackend.Models
 
             public string Slug { get => Utility.Slugify(Name);}
 
-            public Lang[] Languages { get {
-                string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(this.parentProjName), this.configuration.GitRepository);
+            public DirectoryInfo GetParentDirectory()
+            {
+                string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(this.parentProjName), this.configuration.Value.GitRepository);
                 string fullSearchLocation = $"{repoLocation}/{Path}";
 
-                string fileNamePattern = System.IO.Path.GetFileName(fullSearchLocation);
+                return Directory.GetParent(fullSearchLocation);
+            }
 
-                DirectoryInfo parentDirectory = Directory.GetParent(fullSearchLocation);
-                if (!parentDirectory.Exists) return System.Array.Empty<Lang>();
+            public Lang[] Languages { get {
+                string fileNamePattern = System.IO.Path.GetFileName(Path);
+                if (fileNamePattern == null) return Array.Empty<Lang>();
+
+                DirectoryInfo parentDirectory = GetParentDirectory();
+                if (!parentDirectory.Exists) return Array.Empty<Lang>();
 
                 List<Lang> langs = new List<Lang>();
                 foreach (FileInfo file in parentDirectory.GetFiles(fileNamePattern.Replace("{lang}", "*"))) {
@@ -54,12 +61,13 @@ namespace ParlanceBackend.Models
         {
             public string Name { get; set; }
 
-            private List<Subproject> SubprojectsPrivate;
-            public List<Subproject> Subprojects { get => SubprojectsPrivate; set {
+            private List<Subproject> subprojects;
+            
+            public List<Subproject> Subprojects { get => subprojects; set {
                 foreach (Subproject subproj in value) {
                     subproj.parentProjName = Name;
                 }
-                SubprojectsPrivate = value;
+                subprojects = value;
             } }
         }
     }

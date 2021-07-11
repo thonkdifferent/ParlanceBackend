@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using ParlanceBackend.Data;
 using ParlanceBackend.Misc;
 using ParlanceBackend.Models;
+using ParlanceBackend.TranslationFiles;
 
 namespace ParlanceBackend.Controllers
 {
@@ -45,8 +46,8 @@ namespace ParlanceBackend.Controllers
             return project.ToPublicProject(_parlanceConfiguration);
         }
 
-        [HttpGet("{name}/{subproject}/{language}")]
-        public async Task<ActionResult> GetTranslationFile(string name, string subproject, string language)
+        [HttpGet("{name}/{subproject}/{language}/{type}")]
+        public async Task<ActionResult<TranslationFile>> GetTranslationFile(string name, string subproject, string language, string type)
         {
             var projectInternal = await _context.Projects.FindAsync(name);
 
@@ -55,7 +56,8 @@ namespace ParlanceBackend.Controllers
                 return NotFound();
             }
 
-            var project = projectInternal.ToPublicProject(_parlanceConfiguration);
+            return projectInternal.TranslationFile(_parlanceConfiguration, subproject, language);
+            return null;
         }
 
         // // PUT: api/Projects/5

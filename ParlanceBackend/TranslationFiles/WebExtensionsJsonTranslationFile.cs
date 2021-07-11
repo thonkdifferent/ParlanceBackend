@@ -2,7 +2,7 @@ using System.IO;
 using System;
 namespace ParlanceBackend.TranslationFiles {
     class WebExtensionsJsonTranslationFile {
-        static TranslationFile LoadFromFile(string FileName) {
+        public static TranslationFile LoadFromFile(string FileName) {
             return LoadFromBytes(File.ReadAllBytes(FileName));
         }
 

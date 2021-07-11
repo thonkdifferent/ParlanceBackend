@@ -3,7 +3,7 @@ using System.IO;
 
 namespace ParlanceBackend.TranslationFiles {
     class GettextTranslationFile {
-        static TranslationFile LoadFromFile(string FileName) {
+        public static TranslationFile LoadFromFile(string FileName) {
             return LoadFromBytes(File.ReadAllBytes(FileName));
         }
 

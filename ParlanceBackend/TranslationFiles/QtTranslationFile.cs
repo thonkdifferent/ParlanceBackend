@@ -13,7 +13,7 @@ namespace ParlanceBackend.TranslationFiles {
             //Create a translation file and read in the information
             XmlDocument document = new();
             string xml = Encoding.UTF8.GetString(bytes);
-            document.Load(xml);
+            document.LoadXml(xml);
 
             TranslationFile translationFile = new();
             translationFile.DestinationLanguage = document.GetElementsByTagName("TS").Item(0).Attributes.GetNamedItem("language").Value;
@@ -48,7 +48,7 @@ namespace ParlanceBackend.TranslationFiles {
                                     message.Source = messageMeta.Value;
                                     break;
                                 case "translation":
-                                    if (childNode.Attributes.GetNamedItem("numerous").Value == "yes")
+                                    if (childNode.Attributes.GetNamedItem("numerus") != null)
                                     {
                                         foreach(XmlNode translation in messageMeta.ChildNodes)
                                         {
@@ -68,7 +68,7 @@ namespace ParlanceBackend.TranslationFiles {
                         message.Location = locations.ToArray();
                         message.Translation = new Translation
                         {
-                            Unfinished = childNode.Attributes.GetNamedItem("type").Value == "unfinished",
+                            Unfinished = childNode.Attributes.GetNamedItem("type")?.Value == "unfinished",
                             Content = translations.ToArray()
                         };
                         message.Context = contextName;
