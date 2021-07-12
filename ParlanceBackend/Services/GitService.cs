@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using LibGit2Sharp;
 using Microsoft.Extensions.Options;
@@ -12,11 +14,9 @@ namespace ParlanceBackend.Services
 {
     public class GitService
     {
-        private readonly ProjectContext _context;
         private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
-        public GitService(ProjectContext context, IOptions<ParlanceConfiguration> parlanceConfiguration)
+        public GitService(IOptions<ParlanceConfiguration> parlanceConfiguration)
         {
-            _context = context;
             _parlanceConfiguration = parlanceConfiguration;
         }
         
@@ -62,27 +62,66 @@ namespace ParlanceBackend.Services
         
         public async Task CommitAndPush(ProjectPrivate project)
         {
-            string repoLocation = GetDirectoryFromSlug(project.Slug);
+            var repoLocation = GetDirectoryFromSlug(project.Slug);
+            var repo = new Repository(repoLocation);
+            
+            var status = repo.RetrieveStatus();
+            if (!status.IsDirty) return; //Nothing to do here!
+            
+            // foreach (var entry in status.Modified)
+            // {
+            //     repo.Index.Add(entry.FilePath);
+            // }
+            
+            Commands.Stage(repo, "*");
+            repo.Commit("Update Translations", Constants.GetSignature(), Constants.GetSignature());
+
+            //Ensure that we are up to date
+            await Pull(project);
+
+            if (repo.Index.Conflicts.Any())
+            {
+                //Merge conficts!
+                //TODO: Error handling
+                repo.Rebase.Abort();
+                return;
+            }
+
+            await Push(project);
         }
         
-        public async Task Pull(ProjectPrivate project)
+        public async Task Push(ProjectPrivate project)
         {
             var repoLocation = GetDirectoryFromSlug(project.Slug);
-            // Repository repo = new Repository(repoLocation);
-            // repo.Network.Fetch(repo.Network.Remotes["origin"].Url, new []{Branch});
-            // repo.MergeFetchedRefs(Constants.GetSignature(), null);
             
             // I HATE HATE HATE HATE :(
             using var gitProcess = new Process
             {
-                StartInfo = {FileName = "git", Arguments = $"pull", WorkingDirectory = repoLocation}
+                StartInfo = {FileName = "git", Arguments = $"push", WorkingDirectory = repoLocation}
             };
             gitProcess.Start();
 
             await gitProcess.WaitForExitAsync();
 
             if (gitProcess.ExitCode != 0) {
-                Directory.Delete(repoLocation, true);
+                throw new Exception("Push Failed");
+            }
+        }
+        
+        public async Task Pull(ProjectPrivate project)
+        {
+            var repoLocation = GetDirectoryFromSlug(project.Slug);
+            
+            // I HATE HATE HATE HATE :(
+            using var gitProcess = new Process
+            {
+                StartInfo = {FileName = "git", Arguments = $"pull --rebase", WorkingDirectory = repoLocation}
+            };
+            gitProcess.Start();
+
+            await gitProcess.WaitForExitAsync();
+
+            if (gitProcess.ExitCode != 0) {
                 throw new Exception("Pull Failed");
             }
         }

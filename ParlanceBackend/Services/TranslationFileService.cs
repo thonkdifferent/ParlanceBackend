@@ -10,11 +10,9 @@ namespace ParlanceBackend.Services
     public class TranslationFileService
     {
 
-        private readonly ProjectContext _context;
         private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
-        public TranslationFileService(ProjectContext context, IOptions<ParlanceConfiguration> parlanceConfiguration)
+        public TranslationFileService(IOptions<ParlanceConfiguration> parlanceConfiguration)
         {
-            _context = context;
             _parlanceConfiguration = parlanceConfiguration;
         }
         

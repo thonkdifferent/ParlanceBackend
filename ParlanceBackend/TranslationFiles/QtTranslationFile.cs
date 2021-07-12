@@ -154,7 +154,8 @@ namespace ParlanceBackend.TranslationFiles {
             {
                 using (var writer = XmlWriter.Create(stream, new XmlWriterSettings
                 {
-                    Encoding = new UTF8Encoding(false)
+                    Encoding = new UTF8Encoding(false),
+                    Indent = true
                 }))
                 {
                     document.Save(writer);
