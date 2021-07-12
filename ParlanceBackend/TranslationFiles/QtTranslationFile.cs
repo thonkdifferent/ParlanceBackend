@@ -26,7 +26,7 @@ namespace ParlanceBackend.TranslationFiles {
                 foreach(XmlNode childNode in context.ChildNodes)
                 {
                     if (childNode.Name == "name")
-                        contextName = childNode.Value;
+                        contextName = childNode.InnerText;
                     
                     if (childNode.Name == "message")
                     {

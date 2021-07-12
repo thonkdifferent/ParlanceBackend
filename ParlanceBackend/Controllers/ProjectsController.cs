@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,7 @@ namespace ParlanceBackend.Controllers
         }
 
         [HttpGet("{name}/{subproject}/{language}/{type}")]
-        public async Task<ActionResult<TranslationFile>> GetTranslationFile(string name, string subproject, string language, string type)
+        public async Task<ActionResult> GetTranslationFile(string name, string subproject, string language, string type)
         {
             var projectInternal = await _context.Projects.FindAsync(name);
 
@@ -56,8 +57,10 @@ namespace ParlanceBackend.Controllers
                 return NotFound();
             }
 
-            return projectInternal.TranslationFile(_parlanceConfiguration, subproject, language);
-            return null;
+            var translationFile = projectInternal.TranslationFile(_parlanceConfiguration, subproject, language);
+
+            return File(GettextTranslationFile.Save(translationFile), "application/octet-stream",
+                type);
         }
 
         // // PUT: api/Projects/5
