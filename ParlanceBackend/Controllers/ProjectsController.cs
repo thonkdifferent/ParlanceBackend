@@ -63,6 +63,34 @@ namespace ParlanceBackend.Controllers
                 type);
         }
 
+        [HttpPost("{name}/{subproject}/{language}")]
+        public async Task<ActionResult> UpdateTranslationFile(TranslationDelta delta, string name, string subproject, string language)
+        {
+            var projectInternal = await _context.Projects.FindAsync(name);
+
+            if (projectInternal == null)
+            {
+                return NotFound();
+            }
+
+            projectInternal.UpdateTranslationFile(delta, _parlanceConfiguration, subproject, language);
+            return NoContent();
+        }
+
+        [HttpPost("{name}/git/pull")]
+        public async Task<ActionResult> PullGitRepository(string name)
+        {
+            var projectInternal = await _context.Projects.FindAsync(name);
+
+            if (projectInternal == null)
+            {
+                return NotFound();
+            }
+            
+            await projectInternal.Pull(_parlanceConfiguration);
+            return NoContent();
+        }
+
         // // PUT: api/Projects/5
         // // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // [HttpPut("{name}")]

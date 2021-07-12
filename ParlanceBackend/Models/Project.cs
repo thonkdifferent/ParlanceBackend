@@ -47,6 +47,29 @@ namespace ParlanceBackend.Models
             }
         }
 
+        public async Task Pull(IOptions<ParlanceConfiguration> configuration)
+        {
+            string repoLocation = Utility.GetDirectoryFromSlug(Slug, configuration);
+            // Repository repo = new Repository(repoLocation);
+            // repo.Network.Fetch(repo.Network.Remotes["origin"].Url, new []{Branch});
+            // repo.MergeFetchedRefs(Constants.GetSignature(), null);
+            
+            // I HATE HATE HATE HATE :(
+            using (Process gitProcess = new Process()) {
+                gitProcess.StartInfo.FileName = "git";
+                gitProcess.StartInfo.Arguments = $"pull";
+                gitProcess.StartInfo.WorkingDirectory = repoLocation;
+                gitProcess.Start();
+
+                await gitProcess.WaitForExitAsync();
+
+                if (gitProcess.ExitCode != 0) {
+                    Directory.Delete(repoLocation, true);
+                    throw new Exception("Pull Failed");
+                }
+            }
+        }
+
         public void Remove(IOptions<ParlanceConfiguration> configuration) {
             string repoLocation = Utility.GetDirectoryFromSlug(Slug, configuration);
             Directory.Delete(repoLocation, true);
@@ -60,42 +83,62 @@ namespace ParlanceBackend.Models
             Branch = this.Branch
         };
 
+        private JsonFile.Subproject FindSubproject(IOptions<ParlanceConfiguration> configuration, string subproject)
+        {
+            var publicProj = ToPublicProject(configuration);
+
+            var spec = publicProj.specFile();
+
+            var subprojectObj = spec.Subprojects.Find(sp => sp.Slug == subproject);
+            if (subprojectObj == null) return null;
+            
+            subprojectObj.SetConfiguration(configuration);
+
+            return subprojectObj;
+        }
+
+        private string TranslationFileFilename(JsonFile.Subproject subproject,
+            string language)
+        {
+            var fileNamePattern = Path.GetFileName(subproject.Path);
+            if (fileNamePattern == null) return null;
+                
+            var translationsDirectory = subproject.GetParentDirectory();
+            var translationFileName = $"{translationsDirectory.FullName}/{fileNamePattern.Replace("{lang}", language)}";
+
+            return translationFileName;
+        }
+
+        public void UpdateTranslationFile(TranslationDelta delta, IOptions<ParlanceConfiguration> configuration, string subproject, string language)
+        {
+            JsonFile.Subproject subprojectObj = FindSubproject(configuration, subproject);
+            string translationFileName = TranslationFileFilename(FindSubproject(configuration, subproject), language);
+
+            switch (subprojectObj.Type)
+            {
+                case "qt":
+                    QtTranslationFile.Update(translationFileName, delta);
+                    break;
+                default:
+                    throw new Exception("Unknown File Type");
+            }
+        }
+
         public TranslationFile TranslationFile(IOptions<ParlanceConfiguration> configuration, string subproject, string language)
         {
-            Project publicProj = ToPublicProject(configuration);
-
-            JsonFile.Root spec = publicProj.specFile();
-            foreach (JsonFile.Subproject subprojectObj in spec.Subprojects)
-            {
-                if (subprojectObj.Slug == subproject)
-                {
-                    subprojectObj.SetConfiguration(configuration);
-                    
-                    //We found the correct subproject
-                    string fileNamePattern = Path.GetFileName(subprojectObj.Path);
-                    if (fileNamePattern == null) return new();
-                    
-                    DirectoryInfo translationsDirectory = subprojectObj.GetParentDirectory();
-                    string translationFileName = $"{translationsDirectory.FullName}/{fileNamePattern.Replace("{lang}", language)}";
-                    
-                    //TODO: maybe throw an error instead?
-                    if (!File.Exists(translationFileName)) return new TranslationFile();
-
-                    switch (subprojectObj.Type)
-                    {
-                        case "qt":
-                            return QtTranslationFile.LoadFromFile(translationFileName);
-                        case "gettext":
-                            return GettextTranslationFile.LoadFromFile(translationFileName);
-                        case "webext-json":
-                            return WebExtensionsJsonTranslationFile.LoadFromFile(translationFileName);
-                        default:
-                            throw new Exception("Unknown File Type");
-                    }
-                }
-            }
+            JsonFile.Subproject subprojectObj = FindSubproject(configuration, subproject);
+            string translationFileName = TranslationFileFilename(subprojectObj, language);
             
-            return new();
+            //TODO: maybe throw an error instead?
+            if (!File.Exists(translationFileName)) return new TranslationFile();
+
+            return subprojectObj.Type switch
+            {
+                "qt" => QtTranslationFile.LoadFromFile(translationFileName),
+                "gettext" => GettextTranslationFile.LoadFromFile(translationFileName),
+                "webext-json" => WebExtensionsJsonTranslationFile.LoadFromFile(translationFileName),
+                _ => throw new Exception("Unknown File Type")
+            };
         }
     }
     
