@@ -7,7 +7,7 @@ class MessageText extends React.Component {
     }
 
     render() {
-        return <span dir="auto" className={`${this.props.className} ${this.Styles.Text}`}>{this.props.text}</span>;
+        return <span dir="auto" className={`${this.props.className} ${Styles.Text}`}>{this.props.text}</span>;
     }
 }
 

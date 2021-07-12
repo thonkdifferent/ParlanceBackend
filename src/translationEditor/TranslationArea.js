@@ -7,6 +7,7 @@ import {
     withRouter,
     Prompt
 } from "react-router-dom";
+import Fetch from "../utils/Fetch";
 
 import Styles from "./TranslationArea.module.css";
 import TranslationTextEntry from "./TranslationTextEntry";
@@ -22,6 +23,10 @@ class TranslationArea extends React.Component {
 
     async componentDidMount() {
 
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.selection != prevProps.selection && prevProps.selection) this.save(prevProps.selection);
     }
 
     renderTextEntries(translation) {
@@ -40,6 +45,21 @@ class TranslationArea extends React.Component {
             </>
         } else {
             return "Select a translation";
+        }
+    }
+
+    async save(selection) {
+        let params = this.props.match.params;
+        let translation = this.props.poManager.getTranslation(selection.context, selection.key);
+        try {
+            await Fetch.post(`/projects/${params.project}/${params.subproject}/${params.language}`, {
+                context: selection.context,
+                key: selection.key,
+                translations: translation.msgstr,
+                unfinished: false
+            });
+        } catch (err) {
+            alert(`Error while saving. ${err}`)
         }
     }
 
