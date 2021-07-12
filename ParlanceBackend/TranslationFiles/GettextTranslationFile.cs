@@ -67,6 +67,8 @@ namespace ParlanceBackend.TranslationFiles {
             
             });
             generator.Generate(writer, catalog);
+            writer.Flush();
+            stream.Flush();
             
             return stream.ToArray();
         }
