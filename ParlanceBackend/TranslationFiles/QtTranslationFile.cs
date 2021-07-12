@@ -155,7 +155,7 @@ namespace ParlanceBackend.TranslationFiles {
             {
                 using (var writer = new XmlTextWriter(stream, new UTF8Encoding(false)))
                 {
-                    document.Save(stream);
+                    document.Save(writer);
                 }
                 stream.Flush();
                 retData = stream.ToArray();
