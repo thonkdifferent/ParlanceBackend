@@ -1,4 +1,5 @@
 import React from "react";
+import Styles from "./MessageText.module.css";
 
 class MessageText extends React.Component {
     constructor(props) {
@@ -6,7 +7,7 @@ class MessageText extends React.Component {
     }
 
     render() {
-        return <span className={this.props.className}>{this.props.text}</span>;
+        return <span dir="auto" className={`${this.props.className} ${this.Styles.Text}`}>{this.props.text}</span>;
     }
 }
 

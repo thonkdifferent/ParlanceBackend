@@ -32,6 +32,16 @@ const checks = [
                 "message": "The translation needs to contain a %n placeholder."
             }
         }
+    },
+    function CheckStringReplacement(source, translation) {
+        for (let i = 1; i < 10; i++) {
+            if (source.includes(`%${i}`) && !translation.includes(`%${i}`)) {
+                return {
+                    "title": "Missing Placeholder",
+                    "message": `The translation needs to contain a %${i} placeholder.`
+                }
+            }
+        }
     }
 ];
 

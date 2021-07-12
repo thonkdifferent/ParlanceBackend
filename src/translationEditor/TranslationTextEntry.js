@@ -35,7 +35,7 @@ class TranslationTextEntry extends React.Component {
 
         return <>
             <span className={Styles.Introduction}>{this.getTitleString()}</span>
-            <textarea ref={element => this.translatedTextArea = element} value={this.props.translation.msgstr[this.props.index]} className={Styles.TranslatedText} onChange={changeEvent} />
+            <textarea dir="auto" ref={element => this.translatedTextArea = element} value={this.props.translation.msgstr[this.props.index]} className={Styles.TranslatedText} onChange={changeEvent} />
             {this.renderChecks()}
         </>
     }

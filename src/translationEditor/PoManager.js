@@ -19,8 +19,8 @@ class PoManager extends EventEmitter {
             this.hasError = false;
 
             this.updateChecks();
-        } catch {
-            this.hasError = true;
+        } catch (error) {
+            this.hasError = error;
         }
     }
 

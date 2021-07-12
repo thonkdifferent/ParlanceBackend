@@ -1,7 +1,6 @@
 .TranslationItem {
     padding: 9px;
 
-    mask-image: linear-gradient(to right, black 80%, transparent 100%);
     width: 400px;
     max-width: 400px;
     
@@ -29,6 +28,14 @@
     overflow: hidden;
     white-space: nowrap;
     grid-area: translation;
+}
+
+.TranslationText:dir(ltr), .SourceText:dir(ltr) {
+    mask-image: linear-gradient(to right, black 80%, transparent 100%);
+}
+
+.TranslationText:dir(rtl), .SourceText:dir(rtl) {
+    mask-image: linear-gradient(to left, black 80%, transparent 100%);
 }
 
 .Selected {
