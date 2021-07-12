@@ -27,6 +27,7 @@ namespace ParlanceBackend.TranslationFiles {
                 {
                     if (childNode.Name == "name")
                         contextName = childNode.Value;
+                    
                     if (childNode.Name == "message")
                     {
                         Message message = new();
@@ -45,32 +46,30 @@ namespace ParlanceBackend.TranslationFiles {
                                     });
                                     break;
                                 case "source":
-                                    message.Source = messageMeta.Value;
+                                    message.Source = messageMeta.InnerText;
+                                    message.Key = messageMeta.InnerText;
                                     break;
                                 case "translation":
                                     if (childNode.Attributes.GetNamedItem("numerus") != null)
                                     {
                                         foreach(XmlNode translation in messageMeta.ChildNodes)
                                         {
-                                            translations.Add(translation.Value);
+                                            translations.Add(translation.InnerText);
                                         }
                                     }
                                     else
                                     {
-                                        translations.Add(messageMeta.Value);
+                                        translations.Add(messageMeta.InnerText);
                                     }
                                     break;
                                 case "comment":
-                                    message.Comment = messageMeta.Value;
+                                    message.Comment = messageMeta.InnerText;
                                     break;
                             }
                         }
                         message.Location = locations.ToArray();
-                        message.Translation = new Translation
-                        {
-                            Unfinished = childNode.Attributes.GetNamedItem("type")?.Value == "unfinished",
-                            Content = translations.ToArray()
-                        };
+                        message.Unfinished = childNode.Attributes.GetNamedItem("type")?.Value == "unfinished";
+                        message.Translation = translations.ToArray();
                         message.Context = contextName;
                         messages.Add(message);
                     }

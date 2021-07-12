@@ -5,11 +5,7 @@ namespace ParlanceBackend.TranslationFiles {
         public string File { get; set; }
         public int Line { get; set; }
     }
-    public class Translation
-    {
-        public bool Unfinished { get; set; }
-        public string[] Content { get; set; }
-    }
+    
     public class Message {
         public string Source { get; set; }
 
@@ -22,7 +18,9 @@ namespace ParlanceBackend.TranslationFiles {
         public string? Comment { get; set; }
 #nullable disable
 
-        public Translation Translation { get; set; }
+        public string[] Translation { get; set; }
+        
+        public bool Unfinished { get; set; }
     }
 
     public class TranslationFile {
