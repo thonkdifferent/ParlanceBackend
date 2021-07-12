@@ -150,12 +150,14 @@ namespace ParlanceBackend.TranslationFiles {
                     }
                 }
             });
-
-            MemoryStream stream = new MemoryStream();
-            document.Save(stream);
-            stream.Flush();
-
-            return stream.ToArray();
+            byte[] retData;
+            using (MemoryStream stream = new())
+            {
+                document.Save(stream);
+                stream.Flush();
+                retData = stream.ToArray();
+            }
+            return retData;
         }
         
         public static byte[] Save(TranslationFile file) {
