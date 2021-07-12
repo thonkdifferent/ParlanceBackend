@@ -7,7 +7,7 @@ using System.IO;
 
 namespace ParlanceBackend.Models
 {
-    public class JsonFile
+    public class ProjectSpecification
     {
         public class Lang
         {

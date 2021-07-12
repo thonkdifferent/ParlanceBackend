@@ -51,26 +51,26 @@ namespace ParlanceBackend.Models
         public string GitCloneUrl { get; set; }
         public string Branch { get; set; }
 
-        public JsonFile.Root specFile()
+        public ProjectSpecification.Root specFile()
         {
             string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(Name), configuration.Value.GitRepository);
             string jsonFile = $"{repoLocation}/.parlance.json";
             if (!File.Exists(jsonFile)) return null;
 
-            return JsonSerializer.Deserialize<JsonFile.Root>(File.ReadAllText(jsonFile), new JsonSerializerOptions
+            return JsonSerializer.Deserialize<ProjectSpecification.Root>(File.ReadAllText(jsonFile), new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
         }
 
-        public JsonFile.Subproject[] Subprojects {
+        public ProjectSpecification.Subproject[] Subprojects {
             get
             {
-                JsonFile.Root spec = specFile();
+                ProjectSpecification.Root spec = specFile();
                 
-                if (spec == null) return Array.Empty<JsonFile.Subproject>();
+                if (spec == null) return Array.Empty<ProjectSpecification.Subproject>();
                 
-                foreach (JsonFile.Subproject subproj in spec.Subprojects) {
+                foreach (ProjectSpecification.Subproject subproj in spec.Subprojects) {
                     subproj.SetConfiguration(configuration);
                 }
 

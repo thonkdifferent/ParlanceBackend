@@ -18,7 +18,7 @@ namespace ParlanceBackend.Services
             _parlanceConfiguration = parlanceConfiguration;
         }
         
-        private JsonFile.Subproject FindSubproject(ProjectPrivate project, string subproject)
+        private ProjectSpecification.Subproject FindSubproject(ProjectPrivate project, string subproject)
         {
             var publicProj = project.ToPublicProject(_parlanceConfiguration);
 
@@ -32,7 +32,7 @@ namespace ParlanceBackend.Services
             return subprojectObj;
         }
 
-        private string TranslationFileFilename(JsonFile.Subproject subproject,
+        private string TranslationFileFilename(ProjectSpecification.Subproject subproject,
             string language)
         {
             var fileNamePattern = Path.GetFileName(subproject.Path);
