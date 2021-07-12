@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using ParlanceBackend.Data;
 using ParlanceBackend.Misc;
 using ParlanceBackend.Models;
+using ParlanceBackend.Services;
 using ParlanceBackend.TranslationFiles;
 
 namespace ParlanceBackend.Controllers
@@ -20,10 +21,14 @@ namespace ParlanceBackend.Controllers
     {
         private readonly ProjectContext _context;
         private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
-        public ProjectsController(ProjectContext context, IOptions<ParlanceConfiguration> parlanceConfiguration)
+        private readonly GitService _git;
+        private readonly TranslationFileService _translationFile;
+        public ProjectsController(ProjectContext context, IOptions<ParlanceConfiguration> parlanceConfiguration, GitService gitService, TranslationFileService translationFileService)
         {
             _context = context;
             _parlanceConfiguration = parlanceConfiguration;
+            _git = gitService;
+            _translationFile = translationFileService;
         }
 
         // GET: api/Projects
@@ -57,7 +62,7 @@ namespace ParlanceBackend.Controllers
                 return NotFound();
             }
 
-            var translationFile = projectInternal.TranslationFile(_parlanceConfiguration, subproject, language);
+            var translationFile = _translationFile.TranslationFile(projectInternal, subproject, language);
 
             return File(GettextTranslationFile.Save(translationFile), "application/octet-stream",
                 type);
@@ -73,7 +78,7 @@ namespace ParlanceBackend.Controllers
                 return NotFound();
             }
 
-            projectInternal.UpdateTranslationFile(delta, _parlanceConfiguration, subproject, language);
+            _translationFile.UpdateTranslationFile(delta, projectInternal, subproject, language);
             return NoContent();
         }
 
@@ -86,8 +91,9 @@ namespace ParlanceBackend.Controllers
             {
                 return NotFound();
             }
+
+            await _git.Pull(projectInternal);
             
-            await projectInternal.Pull(_parlanceConfiguration);
             return NoContent();
         }
 
@@ -141,7 +147,7 @@ namespace ParlanceBackend.Controllers
                     Branch = project.Branch
                 };
 
-                await projectPrivate.Clone(_parlanceConfiguration);
+                await _git.Clone(projectPrivate);
 
                 _context.Projects.Add(projectPrivate);
                 await _context.SaveChangesAsync();
@@ -165,7 +171,7 @@ namespace ParlanceBackend.Controllers
                 return NotFound();
             }
 
-            project.Remove(_parlanceConfiguration);
+            _git.Remove(project);
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
 

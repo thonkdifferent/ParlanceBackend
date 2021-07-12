@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ParlanceBackend.Models;
 using Microsoft.AspNetCore.OData;
 using ParlanceBackend.Data;
+using ParlanceBackend.Services;
 
 namespace ParlanceBackend
 {
@@ -32,7 +33,11 @@ namespace ParlanceBackend
             });
             services.Configure<ParlanceConfiguration>(Configuration.GetSection("Parlance"));
             services.AddDbContext<ProjectContext>(options => options.UseSqlite(Configuration.GetConnectionString("ProjectContext")));
-            
+
+            services.AddSingleton<GitService>();
+            services.AddSingleton<TranslationFileService>();
+            services.AddHostedService<GitPushService>();
+
             // services.AddDbContext<ProjectContext>(options => options.UseSqlite("Data Source=database.db;"));
         }
 

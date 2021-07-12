@@ -32,7 +32,6 @@ namespace ParlanceBackend.TranslationFiles {
                     else
                     {
                         unprocessedNodes.Add(childNode);
-                        callback(childNode, contextName, document);
                     }
                 }
                 
