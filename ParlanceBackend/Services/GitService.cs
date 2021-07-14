@@ -115,7 +115,7 @@ namespace ParlanceBackend.Services
             // I HATE HATE HATE HATE :(
             using var gitProcess = new Process
             {
-                StartInfo = {FileName = "git", Arguments = $"pull --rebase", WorkingDirectory = repoLocation}
+                StartInfo = {FileName = "git", Arguments = "pull --rebase", WorkingDirectory = repoLocation}
             };
             gitProcess.Start();
 
