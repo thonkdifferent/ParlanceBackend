@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Threading;
-using LibGit2Sharp;
 using ParlanceBackend.Misc;
-using ParlanceBackend.Models;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using System.IO;
-using System.Diagnostics;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
-using ParlanceBackend.TranslationFiles;
+
 
 namespace ParlanceBackend.Models
 {
@@ -27,9 +19,9 @@ namespace ParlanceBackend.Models
         public Project ToPublicProject(IOptions<ParlanceConfiguration> configuration) =>
         new Project(configuration)
         {
-            Name = this.Name,
-            GitCloneUrl = this.GitCloneUrl,
-            Branch = this.Branch
+            Name = Name,
+            GitCloneUrl = GitCloneUrl,
+            Branch = Branch
         };
     }
     
