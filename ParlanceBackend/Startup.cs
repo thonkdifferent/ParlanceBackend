@@ -9,6 +9,7 @@ using ParlanceBackend.Models;
 using Microsoft.AspNetCore.OData;
 using ParlanceBackend.Data;
 using ParlanceBackend.Services;
+using System; 
 
 namespace ParlanceBackend
 {
@@ -17,6 +18,7 @@ namespace ParlanceBackend
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Console.WriteLine("Parlance version GIT-MASTER branch XDocument");
         }
 
         public IConfiguration Configuration { get; }
