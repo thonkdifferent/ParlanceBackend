@@ -21,7 +21,7 @@ namespace ParlanceBackend.Misc
             .Replace("(", "")
             .Replace(")", "");
         }
-        private static string Parse(string input)
+        public static string Parse(string input)
         {
             return input.Replace("{UserFolder}", Constants.USER_FOLDER)
                 .Replace("{ConfigFolder}", Constants.CONFIGURATION_FOLDER)

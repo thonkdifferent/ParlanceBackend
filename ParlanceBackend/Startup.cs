@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
-using ParlanceBackend.Models;
+using ParlanceBackend.Misc;
 using Microsoft.AspNetCore.OData;
 using ParlanceBackend.Data;
 using ParlanceBackend.Services;
@@ -34,8 +34,7 @@ namespace ParlanceBackend
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ParlanceBackend", Version = "v1" });
             });
             services.Configure<ParlanceConfiguration>(Configuration.GetSection("Parlance"));
-            services.AddDbContext<ProjectContext>(options => options.UseSqlite(Configuration.GetConnectionString("ProjectContext")));
-
+            services.AddDbContext<ProjectContext>(options => options.UseSqlite(Utility.Parse(Configuration.GetConnectionString("ProjectContext"))));
             services.AddSingleton<GitService>();
             services.AddSingleton<TranslationFileService>();
             services.AddHostedService<GitPushService>();
