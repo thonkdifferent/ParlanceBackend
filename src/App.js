@@ -11,6 +11,7 @@ import './App.css';
 import ProjectManager from './utils/ProjectManager';
 
 import Header from './components/Header';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 
@@ -45,6 +46,8 @@ class App extends React.Component {
                         <Projects projectManager={this.state.projectManager} />
                     </Route>
                 </Switch>
+
+                <Footer />
             </div>
         </Router>
     }

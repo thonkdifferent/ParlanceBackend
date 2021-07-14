@@ -11,7 +11,7 @@
 .IndexItem {
     padding: 9px;
     display: flex;
-    
+    cursor: default;
 }
 
 .IndexItem:hover {
