@@ -78,7 +78,7 @@ namespace ParlanceBackend.Controllers
                 return NotFound();
             }
 
-            _translationFile.UpdateTranslationFile(delta, projectInternal, subproject, language);
+            _translationFile.UpdateTranslationFile(delta, projectInternal, Utility.Slugify(subproject), language);
             return NoContent();
         }
         

@@ -56,7 +56,7 @@ namespace ParlanceBackend.Services
 
         public TranslationFile TranslationFile(ProjectPrivate project, string subproject, string language)
         {
-            var subprojectObj = FindSubproject(project, subproject);
+            var subprojectObj = FindSubproject(project, Utility.Slugify(subproject));
             var translationFileName = TranslationFileFilename(subprojectObj, language);
             
             //TODO: maybe throw an error instead?
