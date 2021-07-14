@@ -81,36 +81,6 @@ namespace ParlanceBackend.Controllers
             _translationFile.UpdateTranslationFile(delta, projectInternal, subproject, language);
             return NoContent();
         }
-
-        [HttpPost("{name}/git/pull")]
-        public async Task<ActionResult> PullGitRepository(string name)
-        {
-            var projectInternal = await _context.Projects.FindAsync(name);
-
-            if (projectInternal == null)
-            {
-                return NotFound();
-            }
-
-            await _git.Pull(projectInternal);
-            
-            return NoContent();
-        }
-
-        [HttpPost("{name}/git/commitandpush")]
-        public async Task<ActionResult> CommitAndPushGitRepository(string name)
-        {
-            var projectInternal = await _context.Projects.FindAsync(name);
-
-            if (projectInternal == null)
-            {
-                return NotFound();
-            }
-
-            await _git.CommitAndPush(projectInternal);
-            
-            return NoContent();
-        }
         
         // // PUT: api/Projects/5
         // // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

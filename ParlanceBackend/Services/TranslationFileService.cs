@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Options;
 using ParlanceBackend.Data;
+using ParlanceBackend.Misc;
 using ParlanceBackend.Models;
 using ParlanceBackend.TranslationFiles;
 
@@ -11,9 +12,11 @@ namespace ParlanceBackend.Services
     {
 
         private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
-        public TranslationFileService(IOptions<ParlanceConfiguration> parlanceConfiguration)
+        private readonly GitService _git;
+        public TranslationFileService(IOptions<ParlanceConfiguration> parlanceConfiguration, GitService git)
         {
             _parlanceConfiguration = parlanceConfiguration;
+            _git = git;
         }
         
         private ProjectSpecification.Subproject FindSubproject(ProjectPrivate project, string subproject)
@@ -33,13 +36,7 @@ namespace ParlanceBackend.Services
         private string TranslationFileFilename(ProjectSpecification.Subproject subproject,
             string language)
         {
-            var fileNamePattern = Path.GetFileName(subproject.Path);
-            if (fileNamePattern == null) return null;
-                
-            var translationsDirectory = subproject.GetParentDirectory();
-            var translationFileName = $"{translationsDirectory.FullName}/{fileNamePattern.Replace("{lang}", language)}";
-
-            return translationFileName;
+            return $"{_git.GetDirectoryFromSlug(Utility.Slugify(subproject.parentProjName))}/{subproject.Path.Replace("{lang}", language)}";
         }
 
         public void UpdateTranslationFile(TranslationDelta delta, ProjectPrivate project, string subproject, string language)

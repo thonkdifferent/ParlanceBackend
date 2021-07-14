@@ -27,7 +27,7 @@ namespace ParlanceBackend.Services
                 .Replace("{DocsFolder}", Constants.DOCUMENTS_FOLDER);
         }
 
-        private string GetDirectoryFromSlug(string slug)
+        public string GetDirectoryFromSlug(string slug)
         {
             return $"{Parse(_parlanceConfiguration.Value.GitRepository)}/repos/{slug}";
         }

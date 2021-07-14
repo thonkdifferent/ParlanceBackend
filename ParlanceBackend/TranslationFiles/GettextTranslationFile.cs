@@ -31,6 +31,7 @@ namespace ParlanceBackend.TranslationFiles {
             {
                 List<String> comments = message.Location?.Select(location => $"#: {location.File}:{location.Line}")
                     .ToList();
+                if (message.Unfinished) comments.Add("#, fuzzy");
                 if (comments != null) writer.WriteLine(String.Join(",\n", comments));
                 
                 writer.WriteLine($"msgctxt \"{message.Context}\"");

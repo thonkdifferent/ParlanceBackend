@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 using ParlanceBackend.Misc;
 using Microsoft.Extensions.Options;
 using System.IO;
+using System.Linq;
+using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 
 namespace ParlanceBackend.Models
 {
@@ -32,27 +35,14 @@ namespace ParlanceBackend.Models
 
             public string Slug { get => Utility.Slugify(Name);}
 
-            public DirectoryInfo GetParentDirectory()
-            {
-                string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(this.parentProjName), this.configuration.Value.GitRepository);
-                string fullSearchLocation = $"{repoLocation}/{Path}";
-
-                return Directory.GetParent(fullSearchLocation);
-            }
-
             public Lang[] Languages { get {
-                string fileNamePattern = System.IO.Path.GetFileName(Path);
-                if (fileNamePattern == null) return Array.Empty<Lang>();
+                    var repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(this.parentProjName), this.configuration.Value.GitRepository);
 
-                DirectoryInfo parentDirectory = GetParentDirectory();
-                if (!parentDirectory.Exists) return Array.Empty<Lang>();
+                    var matcher = new Matcher();
+                    matcher.AddInclude(Path.Replace("{lang}", "*"));
+                    var result = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(repoLocation)));
 
-                List<Lang> langs = new List<Lang>();
-                foreach (FileInfo file in parentDirectory.GetFiles(fileNamePattern.Replace("{lang}", "*"))) {
-                    langs.Add(new Lang{Identifier=System.IO.Path.GetFileNameWithoutExtension(file.Name)});
-                }
-
-                return langs.ToArray();
+                    return result.Files.Select(file => new Lang {Identifier = System.IO.Path.GetFileNameWithoutExtension(file.Path)}).ToArray();
             }
             }
         }
