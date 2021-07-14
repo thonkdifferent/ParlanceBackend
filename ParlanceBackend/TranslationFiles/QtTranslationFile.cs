@@ -12,41 +12,6 @@ namespace ParlanceBackend.TranslationFiles {
             return ParseXml(File.ReadAllText(FileName));
         }
 
-        #region cursed code
-        //private static XmlDocument ForEachMessageNode(byte[] bytes, Action<XmlNode, string, XmlDocument> callback)
-        //{
-        //    XmlDocument document = new();
-        //    string xml = Encoding.UTF8.GetString(bytes);
-        //    document.LoadXml(xml);
-
-        //    var contexts = document.GetElementsByTagName("context");
-        //    foreach (XmlNode context in contexts)
-        //    {
-        //        var unprocessedNodes = new List<XmlNode>();
-
-        //        var contextName = "";
-        //        foreach(XmlNode childNode in context.ChildNodes)
-        //        {
-        //            if (childNode.Name == "name")
-        //            {
-        //                contextName = childNode.InnerText;
-        //            }
-        //            else
-        //            {
-        //                unprocessedNodes.Add(childNode);
-        //            }
-        //        }
-
-        //        foreach (var node in unprocessedNodes)
-        //        {
-        //            callback(node, contextName, document);
-        //        }
-        //    }
-
-        //    return document;
-        //} 
-        #endregion
-
         static TranslationFile ParseXml(string xmlDoc) {
             //Create a translation file and read in the information
             XDocument file = XDocument.Parse(xmlDoc);
@@ -133,56 +98,6 @@ namespace ParlanceBackend.TranslationFiles {
                 modifiedXml = sw.ToString();
             }
             return modifiedXml;
-            #region more victorcode
-            //XmlDocument document = ForEachMessageNode(originalFile, (node, context, document) =>
-            //{
-            //    if (context != delta.Context) return;
-
-            //    XmlNode translationsNode = null;
-            //    foreach (XmlNode messageMeta in node.ChildNodes)
-            //    {
-            //        switch(messageMeta.Name)
-            //        {
-            //            case "source":
-            //                if (messageMeta.InnerText != delta.Key) return;
-            //                break;
-            //            case "translation":
-            //                translationsNode = messageMeta;
-            //                break;
-            //            case "comment":
-            //                //TODO
-            //                // message.Comment = messageMeta.InnerText;
-            //                break;
-            //        }
-            //    }
-
-            //    if (translationsNode == null) return;
-
-            //    //Update the translation file
-            //    if (delta.Translations.Length == 1)
-            //    {
-            //        translationsNode.InnerText = delta.Translations[0];
-            //    }
-            //    else
-            //    {
-            //        translationsNode.RemoveAll();
-            //        foreach (string translation in delta.Translations)
-            //        {
-            //            XmlNode numNode = document.CreateNode(XmlNodeType.Element, "numerus", null);
-            //            numNode.InnerText = translation;
-            //            translationsNode.AppendChild(numNode);
-            //        }
-            //    }
-            //});
-            //byte[] retData;
-            //using (MemoryStream stream = new())
-            //{
-            //   
-            //    stream.Flush();
-            //    retData = stream.ToArray();
-            //}
-            //return retData; 
-            #endregion
         }
 
         public static byte[] Save(TranslationFile file) {
