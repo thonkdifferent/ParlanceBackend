@@ -42,7 +42,7 @@ namespace ParlanceBackend.Models
                     matcher.AddInclude(Path.Replace("{lang}", "*"));
                     var result = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(repoLocation)));
 
-                    return result.Files.Select(file => new Lang {Identifier = System.IO.Path.GetFileNameWithoutExtension(file.Path)}).ToArray();
+                    return result.Files.Select(file => new Lang {Identifier = System.IO.Path.GetFileNameWithoutExtension(file.Stem)}).ToArray();
             }
             }
         }
