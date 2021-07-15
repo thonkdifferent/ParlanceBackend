@@ -43,7 +43,7 @@ namespace ParlanceBackend.Models
         public string GitCloneUrl { get; set; }
         public string Branch { get; set; }
 
-        public ProjectSpecification.Root specFile()
+        public ProjectSpecification.Root SpecFile()
         {
             string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(Name), configuration.Value.GitRepository);
             string jsonFile = $"{repoLocation}/.parlance.json";
@@ -58,7 +58,7 @@ namespace ParlanceBackend.Models
         public ProjectSpecification.Subproject[] Subprojects {
             get
             {
-                ProjectSpecification.Root spec = specFile();
+                ProjectSpecification.Root spec = SpecFile();
                 
                 if (spec == null) return Array.Empty<ProjectSpecification.Subproject>();
                 

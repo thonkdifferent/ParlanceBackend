@@ -17,6 +17,15 @@ namespace ParlanceBackend.TranslationFiles {
             return ParseXml(File.ReadAllText(FileName));
         }
         /// <summary>
+        /// Load from bytes
+        /// </summary>
+        /// <param name="bytes">The byte array with the XML document</param>
+        /// <returns>The parsed translation file</returns>
+        public static TranslationFile LoadFromBytes(byte[] bytes)
+        {
+            return ParseXml(Encoding.UTF8.GetString(bytes));
+        }
+        /// <summary>
         /// Parses the Qt TS file from a string
         /// </summary>
         /// <param name="xmlDoc">The document as a string</param>
@@ -80,11 +89,11 @@ namespace ParlanceBackend.TranslationFiles {
         {
             XDocument xmlDoc = XDocument.Parse(originalFile);
             var translation = (from tr in xmlDoc.Descendants()
-                                  where (string)tr.Element("source") == delta.Key
+                                  where (string)tr.Element("source") == delta.Key //check if there are with the same key and context
                                   where (string)tr.Parent.Element("name") == delta.Context
-                                  select tr.Element("translation")).First(); //Grab the c
-            //TODO: Make this nicer
+                                  select tr.Element("translation")).First(); //Grab the translation that needs to be changed
 
+            //TODO: Make this nicer
             //Check to see if the translation was unfinished and if the delta marks it as finished
             if(delta.Unfinished == true && translation.Attribute("type") == null) 
             {
