@@ -8,55 +8,85 @@ using ParlanceBackend.Models;
 
 namespace ParlanceBackend.TranslationFiles {
     class QtTranslationFile {
+        /// <summary>
+        /// Load from a file
+        /// </summary>
+        /// <param name="FileName">The path to the file</param>
+        /// <returns>The parsed translation file</returns>
         public static TranslationFile LoadFromFile(string FileName) {
             return ParseXml(File.ReadAllText(FileName));
         }
-
+        /// <summary>
+        /// Parses the Qt TS file from a string
+        /// </summary>
+        /// <param name="xmlDoc">The document as a string</param>
+        /// <returns></returns>
         static TranslationFile ParseXml(string xmlDoc) {
-            //Create a translation file and read in the information
+            //read the information
             XDocument file = XDocument.Parse(xmlDoc);
-            IEnumerable<Message> messages = from msg in file.Descendants("message")
+            IEnumerable<Message> messages = from msg in file.Descendants("message")//get all the messages
                                             select new Message
                                             {
-                                                Source = (string)msg.Element("source"),
+                                                Source = (string)msg.Element("source"),//source and key are the same in Qt
                                                 Key = (string) msg.Element("source"),
-                                                Context = (string)msg.Parent.Element("name"),
-                                                Location = (from location in msg.Elements("location")
+                                                Context = (string)msg.Parent.Element("name"),//the context is specified before the messages
+                                                Location = (from location in msg.Elements("location")//there can be multiple locations
                                                            select new Location
                                                            {
-                                                               File = (string)location.Attribute("filename"),
-                                                               Line = (int)location.Attribute("line")
+                                                               File = (string)location.Attribute("filename"),//set the file name
+                                                               Line = (int)location.Attribute("line")//and line number
 
                                                            }).ToArray(),
-                                                Translation = msg.Attribute("numerus")?.Value == "true" ? 
+                                                Translation = msg.Attribute("numerus")?.Value == "true" ? /*if the message is marked as numerus, then the
+                                                                                                        translations are going to be put
+                                                                                                         like this
+                                                                                                        <translation>
+                                                                                                             <numerusform>text</numerusform>
+                                                                                                             <numerusform>text2</numerusform>
+                                                                                                             <numerusform>text3</numerusform>
+                                                                                                        </translation>
+                                                                                                         otherwise like this
+                                                                                                        <translation>text</translation>*/
                                                                             (from nrtr in msg.Descendants("numerusform")
-                                                                            select (string)nrtr).ToArray() :
+                                                                            select (string)nrtr).ToArray() ://get all the numerus forms
                                                                             new string[1] {
-                                                                                (string)msg.Element("translation")
+                                                                                (string)msg.Element("translation")//otherwise just get the value
                                                                             },
-                                                Unfinished = (string) msg.Element("translation")?.Attribute("type") == "true",
-                                                Comment = (string) msg.Element("comment")
+                                                Unfinished = (string) msg.Element("translation")?.Attribute("type") == "unfinished", // if there is on the translation the type attribute set to unfinished then it's unfinished
+                                                Comment = (string) msg.Element("comment") //get the comment if there are any
                                             };
-            return new TranslationFile
+            return new TranslationFile //pack the collected data
             {
                 DestinationLanguage = (string)file.Element("TS").Attribute("language"),
                 Messages = messages.ToArray()
             };
         }
-
+        /// <summary>
+        /// Update a Qt TS file
+        /// </summary>
+        /// <param name="fileName">File path</param>
+        /// <param name="delta">New information</param>
         public static void Update(string fileName, TranslationDelta delta) {
             File.WriteAllText(fileName, UpdateXml(File.ReadAllText(fileName), delta));
         }
 
+        /// <summary>
+        /// Updates the Qt TS file with new data from the frontend
+        /// </summary>
+        /// <param name="originalFile">The contents of the original file as string</param>
+        /// <param name="delta">The new translation information</param>
+        /// <returns>Updated Qt TS file in XML form</returns>
         public static string UpdateXml(string originalFile, TranslationDelta delta)
         {
             XDocument xmlDoc = XDocument.Parse(originalFile);
             var translation = (from tr in xmlDoc.Descendants()
                                   where (string)tr.Element("source") == delta.Key
                                   where (string)tr.Parent.Element("name") == delta.Context
-                                  select tr.Element("translation")).First();
+                                  select tr.Element("translation")).First(); //Grab the c
             //TODO: Make this nicer
-            if(delta.Unfinished == true && translation.Attribute("type") == null)
+
+            //Check to see if the translation was unfinished and if the delta marks it as finished
+            if(delta.Unfinished == true && translation.Attribute("type") == null) 
             {
                 translation.Add(new XAttribute("type", "unfinished"));
             }
@@ -64,6 +94,7 @@ namespace ParlanceBackend.TranslationFiles {
             {
                 translation.RemoveAttributes();
             }
+            //handle numerus translations
             if((string)translation.Parent.Attribute("type") == "numerus")
             {
                 //TODO: this is the worst code I've done
@@ -74,13 +105,14 @@ namespace ParlanceBackend.TranslationFiles {
                     {
                         translation.Elements("numerusform").ElementAt(i).Value = delta.Translations[i];
                     }
-                    catch (IndexOutOfRangeException)
+                    catch (IndexOutOfRangeException)//if the translation delta doesn't have the full thing(unsure about this
+                                                    //but better safe than sorry)
                     {
                         continue;
                     }
                 }
             }
-            else
+            else //if it's not numerus, then the inner text can just be changed to the translation
             {
                 translation.Value = delta.Translations[0];
             }
@@ -89,8 +121,8 @@ namespace ParlanceBackend.TranslationFiles {
             {
                 using (var writer = System.Xml.XmlWriter.Create(sw, new System.Xml.XmlWriterSettings
                 {
-                    Encoding = new UTF8Encoding(false),
-                    Indent = true
+                    Encoding = new UTF8Encoding(false),//remove BOM
+                    Indent = true//activate indenting
                 }))
                 {
                     xmlDoc.Save(writer);
