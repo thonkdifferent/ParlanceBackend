@@ -56,8 +56,7 @@ namespace ParlanceBackend.TranslationFiles {
                                                                                                         </translation>
                                                                                                          otherwise like this
                                                                                                         <translation>text</translation>*/
-                                                                            (from nrtr in msg.Descendants("numerusform")
-                                                                            select (string)nrtr).ToArray() ://get all the numerus forms
+                                                                            msg.Descendants("numerusform").Select(nrtr => (string)nrtr).ToArray() :
                                                                             new string[1] {
                                                                                 (string)msg.Element("translation")//otherwise just get the value
                                                                             },
