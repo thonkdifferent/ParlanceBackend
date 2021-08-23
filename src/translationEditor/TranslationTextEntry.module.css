@@ -8,6 +8,10 @@
     vertical-align: top;
 }
 
+.TranslatedText:read-only {
+    background-color: rgba(100, 100, 100);
+}
+
 .Introduction {
     padding: 3px;
     text-transform: uppercase;

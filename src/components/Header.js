@@ -4,6 +4,7 @@ import {
   Link,
   withRouter
 } from "react-router-dom";
+import UserIndicator from './UserIndicator';
 
 import Icon from "../assets/icon-dark.svg";
 
@@ -24,6 +25,8 @@ class Header extends React.Component {
             <Link to="/"><img src={Icon} className={Styles.Icon} /></Link>
             <Link to="/projects">Projects</Link>
             {this.renderSnackbar()}
+            <div style={{flexGrow: "1"}}></div>
+            <UserIndicator />
         </div>
     }
 }

@@ -6,6 +6,7 @@ import {
     Link,
     withRouter
 } from "react-router-dom";
+import { withTranslation } from 'react-i18next';
 
 import Index from "../../components/Index";
 
@@ -28,10 +29,10 @@ class ProjectIndex extends React.Component {
     }
 
     render() {
-        return <Index title="Select a project">
+        return <Index title={this.props.t("PROJECT_SELECT_PROMPT")}>
             {this.renderProjects()}
         </Index>;
     }
 }
 
-export default withRouter(ProjectIndex);
+export default withRouter(withTranslation()(ProjectIndex));

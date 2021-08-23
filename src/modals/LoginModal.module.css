@@ -1,0 +1,28 @@
+.LoginContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.LoginTextEntry {
+    color: white;
+    background-color: transparent;
+
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin-top: 9px;
+    margin-bottom: 0px;
+}
+
+.LoginTextEntry + .LoginTextEntry {
+    border-top: none;
+    margin-top: 0px;
+}
+
+.HelpText {
+    opacity: 0.5;
+}
+
+.ErrorText {
+    margin-top: 5px;
+    color: red;
+}

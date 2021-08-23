@@ -13,6 +13,9 @@ class Fetch {
         let headers = {
             "Content-Type": "application/json"
         };
+
+        let token = window.localStorage.getItem("token");
+        if (token) headers["Authorization"] = `Bearer ${token}`;
         
         return headers;
     }

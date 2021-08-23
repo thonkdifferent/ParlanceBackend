@@ -11,7 +11,7 @@ class Modal extends React.Component {
                     {this.props.children}
                 </div>
                 <div className={Styles.ModalButtonContainer}>
-                    {this.props.buttons.map(button => <div onClick={this.props.onButtonClick.bind(this, button)} className={Styles.ModalButton} key={button}>{button}</div>)}
+                    {this.props.buttons?.map(button => <div onClick={this.props.onButtonClick.bind(this, button)} className={Styles.ModalButton} key={button}>{button}</div>)}
                 </div>
             </div>
         </div>

@@ -1,0 +1,17 @@
+.UserIndicator {
+    cursor: pointer;
+    align-self: stretch;
+    
+    display: flex;
+    align-items: center;
+}
+
+.UserIndicator:hover {
+    
+}
+
+.ProfilePicture {
+    margin-right: 9px;
+    height: 32px;
+    clip-path: circle(16px at center);
+}

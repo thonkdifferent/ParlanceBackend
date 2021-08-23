@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import hotkeys from "react-keyboard-shortcuts";
 import Fetch from "../utils/Fetch";
+import userManager from '../utils/UserManager';
 
 import ContextSearch from './ContextSearch';
 
@@ -28,12 +29,33 @@ class TranslationEditor extends React.Component {
             searchQuery: "",
             flags: {
                 unfinishedOnly: false
+            },
+            editable: false
+        }
+
+        userManager.on("userChanged", this.updateEditable.bind(this));
+        this.updateEditable();
+    }
+
+    async updateEditable() {
+        this.setState({
+            editable: false
+        });
+
+        if (userManager.loggedIn()) {
+            try {
+                let params = this.props.match.params;
+                await Fetch.get(`/projects/${params.project}/${params.subproject}/${params.language}/canWrite`);
+                this.setState({
+                    editable: true
+                });
+            } catch {
+                //Ignore
             }
         }
     }
 
     async componentDidMount() {
-        //Grab the po file from the server. Here we'll hardcode it.
         let params = this.props.match.params;
         let fileContents = await (await fetch(`/api/projects/${params.project}/${params.subproject}/${params.language}/gettext`, {
             method: "GET"
@@ -134,7 +156,7 @@ class TranslationEditor extends React.Component {
                             {this.state.po.contexts().map(context => <Context key={context} searchQuery={this.state.searchQuery} flags={this.state.flags} context={context} poManager={this.state.po} selection={this.state.selection} onSelect={this.select.bind(this)} />)}
                         </div>
                     </div>
-                    <TranslationArea selection={this.state.selection} poManager={this.state.po} />
+                    <TranslationArea editable={this.state.editable} selection={this.state.selection} poManager={this.state.po} />
                 </div>
             }
         } else {

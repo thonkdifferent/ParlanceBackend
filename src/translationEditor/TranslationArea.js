@@ -31,7 +31,7 @@ class TranslationArea extends React.Component {
 
     renderTextEntries(translation) {
         return translation.msgstr.map((item, index) => {
-            return <TranslationTextEntry key={index} translation={translation} poManager={this.props.poManager} selection={this.props.selection} index={index} />
+            return <TranslationTextEntry key={index} editable={this.props.editable} translation={translation} poManager={this.props.poManager} selection={this.props.selection} index={index} />
         });
     }
 
@@ -49,6 +49,8 @@ class TranslationArea extends React.Component {
     }
 
     async save(selection) {
+        if (!this.props.editable) return;
+        
         let params = this.props.match.params;
         let translation = this.props.poManager.getTranslation(selection.context, selection.key);
         try {

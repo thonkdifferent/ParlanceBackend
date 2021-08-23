@@ -34,22 +34,24 @@ class App extends React.Component {
     }
 
     render() {
-        return <Router>
-            <div>
-                <Header />
-                
-                <Switch>
-                    <Route exact path="/">
-                        <Home projectManager={this.state.projectManager} />
-                    </Route>
-                    <Route path="/projects">
-                        <Projects projectManager={this.state.projectManager} />
-                    </Route>
-                </Switch>
+        return <React.Suspense fallback={<div />}>
+            <Router>
+                <div>
+                    <Header />
+                    
+                    <Switch>
+                        <Route exact path="/">
+                            <Home projectManager={this.state.projectManager} />
+                        </Route>
+                        <Route path="/projects">
+                            <Projects projectManager={this.state.projectManager} />
+                        </Route>
+                    </Switch>
 
-                <Footer />
-            </div>
-        </Router>
+                    <Footer />
+                </div>
+            </Router>
+        </React.Suspense>
     }
 }
 
