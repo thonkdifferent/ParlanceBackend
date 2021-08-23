@@ -92,7 +92,7 @@ namespace ParlanceBackend.TranslationFiles {
             var translation = (from tr in xmlDoc.Descendants()
                                   where (string)tr.Element("source") == delta.Key //check if there are with the same key and context
                                   where (string)tr.Parent.Element("name") == delta.Context
-                                  select tr.Element("translation")).First(); //Grab the translation that needs to be changed
+                                  select tr.Element("translation")).Single(); //Grab the translation that needs to be changed
 
             //TODO: Make this nicer
             //Check to see if the translation was unfinished and if the delta marks it as finished
