@@ -16,6 +16,7 @@ namespace ParlanceBackend.TranslationFiles {
         public static TranslationFile LoadFromFile(string FileName) {
             return ParseXml(File.ReadAllText(FileName));
         }
+        
         /// <summary>
         /// Load from bytes
         /// </summary>
@@ -25,6 +26,7 @@ namespace ParlanceBackend.TranslationFiles {
         {
             return ParseXml(Encoding.UTF8.GetString(bytes));
         }
+        
         /// <summary>
         /// Parses the Qt TS file from a string
         /// </summary>

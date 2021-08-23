@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -11,6 +12,7 @@ using ParlanceBackend.Models;
 using ParlanceBackend.Services;
 using ParlanceBackend.TranslationFiles;
 using Microsoft.Extensions.Logging;
+using ParlanceBackend.Authentication;
 
 namespace ParlanceBackend.Controllers
 {
@@ -23,6 +25,7 @@ namespace ParlanceBackend.Controllers
         private readonly GitService _git; //git functionality
         private readonly TranslationFileService _translationFile;//translation file manipulation
         private readonly ILogger<ProjectsController> _logger;
+        private readonly IAuthorizationService _authorizationService;
 
         #region Error handling
         private void LogException(Exception ex)
@@ -51,13 +54,14 @@ namespace ParlanceBackend.Controllers
         /// <param name="logger">Logging functionality</param>
         public ProjectsController(ProjectContext context, IOptions<ParlanceConfiguration> parlanceConfiguration,
             GitService gitService, TranslationFileService translationFileService,
-            ILogger<ProjectsController> logger)
+            ILogger<ProjectsController> logger, IAuthorizationService authorizationService)
         {
             _context = context;
             _parlanceConfiguration = parlanceConfiguration;
             _git = gitService;
             _translationFile = translationFileService;
             _logger = logger;
+            _authorizationService = authorizationService;
         }
 
         // GET: api/Projects
@@ -142,8 +146,16 @@ namespace ParlanceBackend.Controllers
         /// <param name="language">Language</param>
         /// <returns></returns>
         [HttpPost("{name}/{subprojectSlug}/{language}")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
         public async Task<ActionResult> UpdateTranslationFile(TranslationDelta delta, string name, string subprojectSlug, string language)
         {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), "UpdateTranslationFile");
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Unauthorized();
+            }
+            
             var projectInternal = await _context.Projects.FindAsync(name);//find the project
 
             if (projectInternal == null)
@@ -159,6 +171,20 @@ namespace ParlanceBackend.Controllers
                 return InternalError(e);
             }
             
+            return NoContent();
+        }
+
+        [HttpGet("{name}/{subprojectSlug}/{language}/canWrite")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> GetTranslationFilePermissions(string name, string subprojectSlug, string language)
+        {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), "UpdateTranslationFile");
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Unauthorized();
+            }
+
             return NoContent();
         }
 

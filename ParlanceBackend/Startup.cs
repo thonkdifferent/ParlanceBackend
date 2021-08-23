@@ -9,7 +9,11 @@ using ParlanceBackend.Misc;
 using Microsoft.AspNetCore.OData;
 using ParlanceBackend.Data;
 using ParlanceBackend.Services;
-using System; 
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using ParlanceBackend.Authentication;
 
 namespace ParlanceBackend
 {
@@ -29,9 +33,47 @@ namespace ParlanceBackend
             //services.AddDbContext<ProjectContext>(opt => opt.UseInMemoryDatabase("VictorsProjectCollection"));
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest).AddOData();
             services.AddControllers();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = DBusAuthenticationHandler.SchemeName;
+            }).AddScheme<AuthenticationSchemeOptions, DBusAuthenticationHandler>(DBusAuthenticationHandler.SchemeName,
+                options => { });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(ProjectsAuthorizationHandler.UpdateTranslationFilePermission,
+                    policy => policy.Requirements.Add(ProjectsAuthorizationHandler.UpdateTranslationFile));
+            });
+            services.AddScoped<IAuthorizationHandler, ProjectsAuthorizationHandler>();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ParlanceBackend", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Description = "Bearer Token",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference()
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                        },
+                        new List<string>()
+                    }
+                });
             });
             services.Configure<ParlanceConfiguration>(Configuration.GetSection("Parlance"));
             services.AddDbContext<ProjectContext>(options => options.UseSqlite(Utility.Parse(Configuration.GetConnectionString("ProjectContext"))));

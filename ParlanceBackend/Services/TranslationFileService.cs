@@ -51,7 +51,8 @@ namespace ParlanceBackend.Services
         private string TranslationFileFilename(ProjectSpecification.Subproject subproject,
             string language)
         {
-            return $"{_git.GetDirectoryFromSlug(subproject.parentProjName)}/{subproject.Path.Replace("{lang}", language)}";
+            return Path.Join(_git.GetDirectoryFromSlug(Utility.Slugify(subproject.parentProjName)),
+                subproject.Path.Replace("{lang}", language));
         }
 
         /// <summary>

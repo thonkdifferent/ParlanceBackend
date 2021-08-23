@@ -29,7 +29,7 @@ namespace ParlanceBackend.Services
 
         public string GetDirectoryFromSlug(string slug)
         {
-            return $"{Parse(_parlanceConfiguration.Value.GitRepository)}/repos/{slug}";
+            return Path.Join(Parse(_parlanceConfiguration.Value.GitRepository), "repos", slug);
         }
         
         public async Task Clone(ProjectPrivate project)
