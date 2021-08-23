@@ -29,10 +29,10 @@ namespace ParlanceBackend.TranslationFiles {
             //Write the messages
             foreach (Message message in file.Messages)
             {
-                List<String> comments = message.Location?.Select(location => $"#: {location.File}:{location.Line}")
+                List<string> comments = message.Location?.Select(location => $"#: {location.File}:{location.Line}")
                     .ToList();
                 if (message.Unfinished) comments.Add("#, fuzzy");
-                if (comments != null) writer.WriteLine(String.Join(",\n", comments));
+                if (comments != null) writer.WriteLine(string.Join(",\n", comments));
                 
                 writer.WriteLine($"msgctxt \"{message.Context}\"");
                 writer.WriteLine($"msgid \"{message.Source}\"");

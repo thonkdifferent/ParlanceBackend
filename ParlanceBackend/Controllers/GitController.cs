@@ -53,7 +53,7 @@ namespace ParlanceBackend.Controllers
             return NoContent();
         }
 
-        [HttpPost("/hook/github")]
+        [HttpPost("hook/github")]
         public async Task<ActionResult> ExecuteGithubWebhook()
         {
             //We're only interested in push events

@@ -17,4 +17,32 @@ namespace ParlanceBackend.Models
         public IEnumerable<string> Languages { get; set; }
         public IEnumerable<string> AuthenticationTokens { get; set; }
     }
+
+    public class CreateUserData
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class TokenData
+    {
+        public string Token { get; set; }
+        public string Error { get; set; }
+    }
+
+    public class ProvisionTokenData
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string OtpToken { get; set; }
+        public string NewPassword { get; set; }
+    }
+
+    public class UserInformationData
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public bool Verified { get; set; }
+    }
 }
