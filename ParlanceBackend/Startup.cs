@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,7 +8,11 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using ParlanceBackend.Misc;
 using Microsoft.AspNetCore.OData;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 using ParlanceBackend.Data;
+using ParlanceBackend.Misc;
 using ParlanceBackend.Services;
 using System;
 using System.Collections.Generic;
@@ -85,7 +90,7 @@ namespace ParlanceBackend
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ParlanceConfiguration> parlanceConfiguration)
         {
             if (env.IsDevelopment())
             {
@@ -94,6 +99,15 @@ namespace ParlanceBackend
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ParlanceBackend v1"));
             }
 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Utility.Parse(parlanceConfiguration.Value.StaticFilesPath))
+                {
+                    
+                },
+                RequestPath = ""
+            });
+            
             app.UseRouting();
 
             app.UseAuthorization();
