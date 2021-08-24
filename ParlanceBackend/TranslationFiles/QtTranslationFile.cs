@@ -3,26 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using ParlanceBackend.Models;
 
 namespace ParlanceBackend.TranslationFiles {
-    class QtTranslationFile {
-        /// <summary>
-        /// Load from a file
-        /// </summary>
-        /// <param name="FileName">The path to the file</param>
-        /// <returns>The parsed translation file</returns>
-        public static TranslationFile LoadFromFile(string FileName) {
-            return ParseXml(File.ReadAllText(FileName));
-        }
-        
+    class QtTranslationFile : ITranslationFileFormat
+    {
         /// <summary>
         /// Load from bytes
         /// </summary>
         /// <param name="bytes">The byte array with the XML document</param>
         /// <returns>The parsed translation file</returns>
-        public static TranslationFile LoadFromBytes(byte[] bytes)
+        public TranslationFile LoadFromBytes(byte[] bytes)
         {
             return ParseXml(Encoding.UTF8.GetString(bytes));
         }
@@ -76,8 +69,16 @@ namespace ParlanceBackend.TranslationFiles {
         /// </summary>
         /// <param name="fileName">File path</param>
         /// <param name="delta">New information</param>
-        public static void Update(string fileName, TranslationDelta delta) {
+        public void Update(string fileName, TranslationDelta delta) {
             File.WriteAllText(fileName, UpdateXml(File.ReadAllText(fileName), delta));
+        }
+
+        public string TransformLanguageName(string languageName)
+        {
+            var intermediary = languageName.Replace("-", "_");
+            var parts = intermediary.Split("_");
+            if (parts.Length > 1) parts[1] = parts[1].ToUpper();
+            return String.Join("_", parts);
         }
 
         /// <summary>
@@ -142,9 +143,31 @@ namespace ParlanceBackend.TranslationFiles {
             return modifiedXml;
         }
 
-        public static byte[] Save(TranslationFile file) {
-            
-            throw new NotImplementedException();
+        public byte[] Save(TranslationFile file)
+        {
+            var doc = new XDocument(
+                new XDeclaration("1.0", "utf-8", "yes"),
+                new XDocumentType("TS", null, null, ""),
+                new XElement("TS", 
+                    new XAttribute("version", "2.1"),
+                    new XAttribute("language", file.DestinationLanguage.Replace("-", "_")),
+                    new XAttribute("sourceLanguage", "en_US"),
+                    file.Messages.GroupBy(message => message.Context).Select(context => new XElement("context",
+                            new XElement("name", context.Key),
+                            context.Select(message => new XElement("message", 
+                                    message.Location?.Select(location => new XElement("location",
+                                        new XAttribute("filename", location.File),
+                                        new XAttribute("line", location.Line))) ?? Enumerable.Empty<XElement>(),
+                                    new XElement("source", message.Source),
+                                    new XElement("translation",
+                                        message.Unfinished ? new XAttribute("type", "unfinished") : Enumerable.Empty<XElement>(),
+                                        message.Translation.Length == 1 ? message.Translation[0] : message.Translation.Select(translation => new XElement("numerusform", translation)))
+                                ))
+                        ))
+                    )
+                );
+
+            return Encoding.UTF8.GetBytes(doc.ToString());
         }
     }
 }

@@ -75,7 +75,7 @@ namespace ParlanceBackend.Services
             //get the filename
             var translationFileName = TranslationFileFilename(subprojectObj, language);
 
-            TranslationFileFormat.Update(subprojectObj.Type, translationFileName, delta);
+            ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).Update(translationFileName, delta);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace ParlanceBackend.Services
         /// <param name="subproject">Subproject slug</param>
         /// <param name="language">Language in question</param>
         /// <returns>A translation file object</returns>
-        public TranslationFile TranslationFile(ProjectPrivate project, string subproject, string language)
+        public async Task<TranslationFile> TranslationFile(ProjectPrivate project, string subproject, string language)
         {
             //find the subproject
             var subprojectObj = FindSubproject(project, subproject);
@@ -99,7 +99,7 @@ namespace ParlanceBackend.Services
             if (!File.Exists(translationFileName)) throw new FileNotFoundException("Translation file could not be found");
 
             //call the appropriate function
-            return TranslationFileFormat.LoadFromFile(subprojectObj.Type, translationFileName);
+            return await ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).LoadFromFile(translationFileName);
         }
 
         public async Task<TranslationFile> CreateTranslationFile(ProjectPrivate project, string subproject, string language)
@@ -110,21 +110,19 @@ namespace ParlanceBackend.Services
                 throw new FileNotFoundException("Unable to find subproject");
             }
 
-            var translationFileName = TranslationFileFilename(subprojectObj, language);
+            var translationFileName = TranslationFileFilename(subprojectObj, ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).TransformLanguageName(language));
             if (File.Exists(translationFileName)) throw new FileNotFoundException("Translation file could not be found");
 
             var baseTranslationFileName = TranslationFileFilename(subprojectObj, subprojectObj.BaseLang);
-            var baseTranslationFile = TranslationFileFormat.LoadFromFile(subprojectObj.Type, baseTranslationFileName);
-            
-            //TODO: Edit translation file to ensure it is empty
+            var baseTranslationFile = await ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).LoadFromFile(baseTranslationFileName);
+
+            baseTranslationFile.DestinationLanguage = language;
             foreach (var message in baseTranslationFile.Messages)
             {
                 Array.Fill(message.Translation, "");
             }
 
-            var fileData = TranslationFileFormat.Save(subprojectObj.Type, baseTranslationFile);
-
-            await File.WriteAllBytesAsync(translationFileName, fileData);
+            await ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).SaveToFile(translationFileName, baseTranslationFile);
 
             return baseTranslationFile;
         }

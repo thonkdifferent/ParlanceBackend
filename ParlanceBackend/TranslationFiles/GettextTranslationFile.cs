@@ -3,19 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Karambolo.PO;
+using ParlanceBackend.Models;
 
 namespace ParlanceBackend.TranslationFiles {
-    class GettextTranslationFile {
-        public static TranslationFile LoadFromFile(string fileName) {
-            return LoadFromBytes(File.ReadAllBytes(fileName));
-        }
-
-        static TranslationFile LoadFromBytes(byte[] bytes) {
+    class GettextTranslationFile : ITranslationFileFormat {
+        public TranslationFile LoadFromBytes(byte[] bytes) {
             //Create a translation file and read in the information
             return new TranslationFile();
         }
 
-        public static byte[] Save(TranslationFile file)
+        public byte[] Save(TranslationFile file)
         {
             MemoryStream stream = new MemoryStream();
             TextWriter writer = new StreamWriter(stream);
@@ -54,6 +51,16 @@ namespace ParlanceBackend.TranslationFiles {
             writer.Flush();
             stream.Flush();
             return stream.ToArray();
+        }
+
+        public void Update(string fileName, TranslationDelta delta)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string TransformLanguageName(string languageName)
+        {
+            return languageName;
         }
     }
 }

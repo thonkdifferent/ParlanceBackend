@@ -1,42 +1,37 @@
 using System;
+using System.IO;
+using System.Threading.Tasks;
 using ParlanceBackend.Models;
 
 namespace ParlanceBackend.TranslationFiles
 {
-    public class TranslationFileFormat
+    interface ITranslationFileFormat
     {
-        public static TranslationFile LoadFromFile(string format, string fileName)
+        public TranslationFile LoadFromBytes(byte[] bytes);
+        public byte[] Save(TranslationFile file);
+        public void Update(string fileName, TranslationDelta delta);
+        public string TransformLanguageName(string languageName);
+
+        private static readonly QtTranslationFile QtLoader = new();
+        private static readonly GettextTranslationFile GettextLoader = new();
+        private static readonly WebExtensionsJsonTranslationFile WebextjsonLoader = new();
+
+        static ITranslationFileFormat LoaderForFormat(string format) => format switch
         {
-            return format switch
-            {
-                "qt" => QtTranslationFile.LoadFromFile(fileName),
-                "gettext" => GettextTranslationFile.LoadFromFile(fileName),
-                "webext-json" => WebExtensionsJsonTranslationFile.LoadFromFile(fileName),
-                _ => throw new ArgumentException("Unknown File Type")
-            };
+            "qt" => QtLoader,
+            "gettext" => GettextLoader,
+            "webext-json" => WebextjsonLoader,
+            _ => throw new ArgumentException("Unknown File Type")
+        };
+
+        public async Task<TranslationFile> LoadFromFile(string fileName)
+        {
+            return LoadFromBytes(await File.ReadAllBytesAsync(fileName));
         }
 
-        public static byte[] Save(String format, TranslationFile file)
+        public async Task SaveToFile(string fileName, TranslationFile file)
         {
-            return format switch
-            {
-                "qt" => QtTranslationFile.Save(file),
-                "gettext" => GettextTranslationFile.Save(file),
-                "webext-json" => WebExtensionsJsonTranslationFile.Save(file),
-                _ => throw new ArgumentException("Unknown File Type")
-            };
-        }
-
-        public static void Update(string format, string fileName, TranslationDelta delta)
-        {
-            switch (format)
-            {
-                case "qt":
-                    QtTranslationFile.Update(fileName, delta);
-                    break;
-                default:
-                    throw new ArgumentException("Unknown File Type");
-            }
+            await File.WriteAllBytesAsync(fileName, Save(file));
         }
     }
 }

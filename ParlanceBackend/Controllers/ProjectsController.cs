@@ -115,7 +115,7 @@ namespace ParlanceBackend.Controllers
             TranslationFile translationFile;
             try
             {//try get the translation file
-                translationFile = _translationFile.TranslationFile(projectInternal, subprojectSlug, language);//grab the translation file in an universal format
+                translationFile = await _translationFile.TranslationFile(projectInternal, subprojectSlug, language);//grab the translation file in an universal format
             }
             catch (System.IO.FileNotFoundException)//if the subproject has not been found
             {
@@ -133,7 +133,8 @@ namespace ParlanceBackend.Controllers
             {
                 return InternalError(e);
             }
-            return File(GettextTranslationFile.Save(translationFile), "application/octet-stream",
+            
+            return File(ITranslationFileFormat.LoaderForFormat("gettext").Save(translationFile), "application/octet-stream",
                 type);
         }
 
