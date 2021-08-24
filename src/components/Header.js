@@ -21,6 +21,7 @@ class Header extends React.Component {
     }
 
     render() {
+        console.log(this.props);
         return <div className={Styles.Header}>
             <Link to="/"><img src={Icon} className={Styles.Icon} /></Link>
             <Link to="/projects">Projects</Link>

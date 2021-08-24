@@ -10,11 +10,14 @@ import UserProfileModal from "../modals/UserProfileModal";
 class UserManager extends EventEmitter {
     #username;
     #email;
+    #isSuperuser;
 
     constructor() {
         super();
+
         this.#username = "";
         this.#email = "";
+        this.#isSuperuser = false;
 
         this.refreshUserData();
     }
@@ -43,15 +46,22 @@ class UserManager extends EventEmitter {
         let token = window.localStorage.getItem("token");
         if (token) {
             try {
-                let userData = await Fetch.get("/users/me");
+                let [userData, permissionData] = await Promise.all([
+                    Fetch.get("/users/me"),
+                    Fetch.get("/users/me/permissions")
+                ]);
+
                 this.#username = userData.username;
                 this.#email = userData.email;
+                this.#isSuperuser = permissionData.superuser;
             } catch {
                 //The token is invalid
                 await this.logout();
             }
         } else {
             this.#username = "";
+            this.#email = "";
+            this.#isSuperuser = false;
         }
         this.emit("userChanged");
     }
@@ -62,6 +72,10 @@ class UserManager extends EventEmitter {
 
     username() {
         return this.#username;
+    }
+
+    isSuperuser() {
+        return this.#isSuperuser;
     }
 
     profilePictureUrl() {

@@ -9,6 +9,7 @@ import {
 import './App.css';
 
 import ProjectManager from './utils/ProjectManager';
+import SiteAdministration from "./pages/SiteAdministration";
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -37,14 +38,16 @@ class App extends React.Component {
         return <React.Suspense fallback={<div />}>
             <Router>
                 <div>
-                    <Header />
-                    
+                    <Header projectManager={this.state.projectManager} />
                     <Switch>
                         <Route exact path="/">
                             <Home projectManager={this.state.projectManager} />
                         </Route>
                         <Route path="/projects">
                             <Projects projectManager={this.state.projectManager} />
+                        </Route>
+                        <Route path="/admin">
+                            <SiteAdministration projectManager={this.state.projectManager} />
                         </Route>
                     </Switch>
 

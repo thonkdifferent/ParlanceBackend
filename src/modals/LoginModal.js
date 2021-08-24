@@ -196,10 +196,10 @@ class LoginModal extends React.Component {
                 </div>
             </Modal>,
             loginProcessing: <Modal heading="Log In" >
-                Please wait...
+            <Modal.ModalProgressSpinner message={"Logging in..."} />
             </Modal>,
             registerProcessing: <Modal heading="Register" >
-                Please wait...
+            <Modal.ModalProgressSpinner message={"Creating account..."} />
             </Modal>,
             disabled: <Modal heading="Disabled Account" buttons={["OK"]} onButtonClick={this.buttonClick.bind(this)}>
                 Sorry, you can't be logged in as this account is disbled.

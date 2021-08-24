@@ -56,3 +56,20 @@
 .ModalButton:not(:last-child) {
     border-right: 1px solid rgb(80, 80, 80);
 }
+
+.ModalProgressSpinner {
+    display: flex;
+    flex-grow: 1;
+
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 600px) {
+    .ModalContainer {
+        align-self: flex-end;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+    }
+}

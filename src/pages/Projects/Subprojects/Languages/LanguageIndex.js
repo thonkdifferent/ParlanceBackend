@@ -8,21 +8,33 @@ import {
 } from "react-router-dom";
 import tags from "language-tags";
 
+import languageManager from '../../../../utils/LanguageManager';
+
 import Index from "../../../../components/Index";
 import Modal from "../../../../components/Modal";
+import ModalList from '../../../../components/ModalList';
+import Fetch from '../../../../utils/Fetch';
+import AddLanguageModal from '../../../../modals/AddLanguageModal';
 
 class ProjectLanguageSelect extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            projects: []
+            projects: [],
+            error: ""
         }
     }
 
     async componentDidMount() {
-        this.setState({
-            parentSubproject: (await this.props.projectManager.getAllProjects()).find(project => project.name === this.props.match.params.project).subprojects.find(subproject => subproject.slug === this.props.match.params.subproject)
-        });
+        try {
+            this.setState({
+                parentSubproject: (await this.props.projectManager.getAllProjects()).find(project => project.name === this.props.match.params.project).subprojects.find(subproject => subproject.slug === this.props.match.params.subproject)
+            });
+        } catch {
+            this.setState({
+                error: "notFound"
+            });
+        }
     }
 
     addLanguage() {
@@ -32,9 +44,7 @@ class ProjectLanguageSelect extends React.Component {
             }
         };
 
-        Modal.mount(<Modal heading="Add a language" buttons={["Cancel", "Add Language"]} onButtonClick={buttonClick}>
-            Which language do you want to add?
-        </Modal>)
+        Modal.mount(<AddLanguageModal project={this.props.match.params.project} subproject={this.state.parentSubproject.slug} languages={Object.values(languageManager.languages)} />)
     }
 
     renderLanguages() {
@@ -45,9 +55,15 @@ class ProjectLanguageSelect extends React.Component {
     }
 
     render() {
-        return <Index title={this.state.parentSubproject?.name}>
-            {this.renderLanguages()}
-        </Index>;
+        if (this.state.error) {
+            return <div>
+                We couldn't find that project.
+            </div>
+        } else {
+            return <Index title={this.state.parentSubproject?.name}>
+                {this.renderLanguages()}
+            </Index>;
+        }
     }
 }
 

@@ -1,0 +1,28 @@
+.AdministrationSidebar {
+    display: flex;
+    flex-direction: column;
+
+    max-width: 300px;
+    flex-basis: 300px;
+    border-right: 1px solid rgb(80, 80, 80);
+}
+
+.SidebarHeader {
+    padding: 9px;
+    font-size: 15pt;
+
+    border-bottom: 1px solid rgb(80, 80, 80);
+}
+
+.SidebarItem {
+    padding: 3px;
+    padding-left: 9px;
+}
+
+.SidebarItem:hover {
+    background-color: rgba(0, 100, 100, 0.5);
+}
+
+.SidebarItem.Selected, .SidebarItem:active {
+    background-color: rgba(0, 100, 100);
+}
