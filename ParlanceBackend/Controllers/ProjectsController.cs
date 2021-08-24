@@ -149,7 +149,7 @@ namespace ParlanceBackend.Controllers
         [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
         public async Task<ActionResult> UpdateTranslationFile(TranslationDelta delta, string name, string subprojectSlug, string language)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), "UpdateTranslationFile");
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), ProjectsAuthorizationHandler.UpdateTranslationFile);
 
             if (!authorizationResult.Succeeded)
             {
@@ -178,13 +178,29 @@ namespace ParlanceBackend.Controllers
         [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
         public async Task<ActionResult> GetTranslationFilePermissions(string name, string subprojectSlug, string language)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), "UpdateTranslationFile");
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), ProjectsAuthorizationHandler.UpdateTranslationFile);
 
             if (!authorizationResult.Succeeded)
             {
                 return Unauthorized();
             }
 
+            return NoContent();
+        }
+        
+        [HttpPost("{name}/{subprojectSlug}/{language}/create")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> CreateNewTranslationLanguage(string name, string subprojectSlug, string language)
+        {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), ProjectsAuthorizationHandler.UpdateTranslationFile);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Unauthorized();
+            }
+
+            var projectInternal = await _context.Projects.FindAsync(name);
+            await _translationFile.CreateTranslationFile(projectInternal, subprojectSlug, language);
             return NoContent();
         }
 
@@ -228,9 +244,17 @@ namespace ParlanceBackend.Controllers
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
         public async Task<ActionResult<Project>> PostProject(Project project)
         {
-            //TODO: Ensure the user is a superuser
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, default, ProjectsAuthorizationHandler.CreateNewProject);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Unauthorized();
+            }
+            
+            
             project.SetConfiguration(_parlanceConfiguration);
             try {
                 ProjectPrivate projectPrivate = new()//populate with internal data
@@ -254,9 +278,15 @@ namespace ParlanceBackend.Controllers
 
         // DELETE: api/Projects/5
         [HttpDelete("{name}")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
         public async Task<IActionResult> DeleteProject(string name)
         {
-            //TODO: Ensure the user is a superuser
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, default, ProjectsAuthorizationHandler.CreateNewProject);
+
+            if (!authorizationResult.Succeeded)
+            {
+                return Unauthorized();
+            }
             
             ProjectPrivate project = await _context.Projects.FindAsync(name);
             if (project == null)

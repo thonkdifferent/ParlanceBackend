@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using ParlanceBackend.Authentication;
 using ParlanceBackend.Data;
 using ParlanceBackend.Services;
 
@@ -15,12 +17,14 @@ namespace ParlanceBackend.Controllers
         private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
         private readonly GitService _git;
         private readonly TranslationFileService _translationFile;
-        public GitController(ProjectContext context, IOptions<ParlanceConfiguration> parlanceConfiguration, GitService gitService, TranslationFileService translationFileService)
+        private readonly IAuthorizationService _authorizationService;
+        public GitController(ProjectContext context, IOptions<ParlanceConfiguration> parlanceConfiguration, GitService gitService, TranslationFileService translationFileService, IAuthorizationService authorizationService)
         {
             _context = context;
             _parlanceConfiguration = parlanceConfiguration;
             _git = gitService;
             _translationFile = translationFileService;
+            _authorizationService = authorizationService;
         }
 
         [HttpPost("{name}/pull")]

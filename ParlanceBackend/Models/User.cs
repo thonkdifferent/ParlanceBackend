@@ -45,4 +45,11 @@ namespace ParlanceBackend.Models
         public string Email { get; set; }
         public bool Verified { get; set; }
     }
+
+    public class PermissionsData
+    {
+        public bool Superuser { get; set; }
+        public List<Language> AllowedLanguages { get; set; }
+        public List<Project> AllowedProjects { get; set; }
+    }
 }

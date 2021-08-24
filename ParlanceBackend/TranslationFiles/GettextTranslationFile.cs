@@ -6,8 +6,8 @@ using Karambolo.PO;
 
 namespace ParlanceBackend.TranslationFiles {
     class GettextTranslationFile {
-        public static TranslationFile LoadFromFile(string FileName) {
-            return LoadFromBytes(File.ReadAllBytes(FileName));
+        public static TranslationFile LoadFromFile(string fileName) {
+            return LoadFromBytes(File.ReadAllBytes(fileName));
         }
 
         static TranslationFile LoadFromBytes(byte[] bytes) {
@@ -27,9 +27,9 @@ namespace ParlanceBackend.TranslationFiles {
             writer.WriteLine();
             
             //Write the messages
-            foreach (Message message in file.Messages)
+            foreach (var message in file.Messages)
             {
-                List<string> comments = message.Location?.Select(location => $"#: {location.File}:{location.Line}")
+                var comments = message.Location?.Select(location => $"#: {location.File}:{location.Line}")
                     .ToList();
                 if (message.Unfinished) comments.Add("#, fuzzy");
                 if (comments != null) writer.WriteLine(string.Join(",\n", comments));
@@ -43,7 +43,7 @@ namespace ParlanceBackend.TranslationFiles {
                 else
                 {
                     writer.WriteLine($"msgid_plural \"{message.Source}\"");
-                    for (int i = 0; i < message.Translation.Length; i++)
+                    for (var i = 0; i < message.Translation.Length; i++)
                     {
                         writer.WriteLine($"msgstr[{i}] \"{message.Translation[i]}\"");
                     }

@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
+using Karambolo.Common;
 using Microsoft.Extensions.Options;
 using ParlanceBackend.Misc;
 using ParlanceBackend.Models;
@@ -73,15 +75,7 @@ namespace ParlanceBackend.Services
             //get the filename
             var translationFileName = TranslationFileFilename(subprojectObj, language);
 
-            //call the appropriate function
-            switch (subprojectObj.Type)
-            {
-                case "qt":
-                    QtTranslationFile.Update(translationFileName, delta);
-                    break;
-                default:
-                    throw new ArgumentException("Unknown File Type");
-            }
+            TranslationFileFormat.Update(subprojectObj.Type, translationFileName, delta);
         }
 
         /// <summary>
@@ -105,13 +99,34 @@ namespace ParlanceBackend.Services
             if (!File.Exists(translationFileName)) throw new FileNotFoundException("Translation file could not be found");
 
             //call the appropriate function
-            return subprojectObj.Type switch
+            return TranslationFileFormat.LoadFromFile(subprojectObj.Type, translationFileName);
+        }
+
+        public async Task<TranslationFile> CreateTranslationFile(ProjectPrivate project, string subproject, string language)
+        {
+            var subprojectObj = FindSubproject(project, subproject);
+            if (subprojectObj == null)
             {
-                "qt" => QtTranslationFile.LoadFromFile(translationFileName),
-                "gettext" => GettextTranslationFile.LoadFromFile(translationFileName),
-                "webext-json" => WebExtensionsJsonTranslationFile.LoadFromFile(translationFileName),
-                _ => throw new ArgumentException("Unknown File Type")
-            };
+                throw new FileNotFoundException("Unable to find subproject");
+            }
+
+            var translationFileName = TranslationFileFilename(subprojectObj, language);
+            if (File.Exists(translationFileName)) throw new FileNotFoundException("Translation file could not be found");
+
+            var baseTranslationFileName = TranslationFileFilename(subprojectObj, subprojectObj.BaseLang);
+            var baseTranslationFile = TranslationFileFormat.LoadFromFile(subprojectObj.Type, baseTranslationFileName);
+            
+            //TODO: Edit translation file to ensure it is empty
+            foreach (var message in baseTranslationFile.Messages)
+            {
+                Array.Fill(message.Translation, "");
+            }
+
+            var fileData = TranslationFileFormat.Save(subprojectObj.Type, baseTranslationFile);
+
+            await File.WriteAllBytesAsync(translationFileName, fileData);
+
+            return baseTranslationFile;
         }
     }
 }

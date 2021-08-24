@@ -8,8 +8,10 @@ using accounts.DBus;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ParlanceBackend.Authentication;
+using ParlanceBackend.Data;
 using ParlanceBackend.Models;
 using Tmds.DBus;
 
@@ -20,9 +22,11 @@ namespace ParlanceBackend.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
-        public AccountsController(IOptions<ParlanceConfiguration> parlanceConfiguration)
+        private readonly ProjectContext _context;
+        public AccountsController(IOptions<ParlanceConfiguration> parlanceConfiguration, ProjectContext context)
         {
             _parlanceConfiguration = parlanceConfiguration;
+            _context = context;
         }
         
         private async Task<Connection> AccountsConnection()
@@ -124,6 +128,20 @@ namespace ParlanceBackend.Controllers
                 Verified = await userProxy.GetVerifiedAsync()
             };
             return information;
+        }
+
+        [HttpGet("me/permissions")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult<PermissionsData>> GetUserPermissions()
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+
+            var data = new PermissionsData
+            {
+                Superuser = await _context.Superusers.FindAsync(ulong.Parse(userId)) is not null,
+                AllowedLanguages = await _context.AllowedLanguages.Where(permission => permission.UserId == ulong.Parse(userId)).Select(permission => permission.Language).ToListAsync()
+            };
+            return data;
         }
     }
 }

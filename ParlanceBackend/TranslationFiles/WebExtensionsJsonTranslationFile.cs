@@ -11,8 +11,9 @@ namespace ParlanceBackend.TranslationFiles {
             return new TranslationFile();
         }
         
-        static byte[] Save(TranslationFile file) {
-            throw new NotImplementedException();
+        public static byte[] Save(TranslationFile file)
+        {
+            return new byte[]{};
         }
     }
 }

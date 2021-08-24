@@ -42,12 +42,15 @@ namespace ParlanceBackend
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = DBusAuthenticationHandler.SchemeName;
+                options.DefaultAuthenticateScheme = DBusAuthenticationHandler.SchemeName;
             }).AddScheme<AuthenticationSchemeOptions, DBusAuthenticationHandler>(DBusAuthenticationHandler.SchemeName,
                 options => { });
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(ProjectsAuthorizationHandler.UpdateTranslationFilePermission,
                     policy => policy.Requirements.Add(ProjectsAuthorizationHandler.UpdateTranslationFile));
+                options.AddPolicy(ProjectsAuthorizationHandler.CreateNewProjectPermission,
+                    policy => policy.Requirements.Add(ProjectsAuthorizationHandler.CreateNewProject));
             });
             services.AddScoped<IAuthorizationHandler, ProjectsAuthorizationHandler>();
             
@@ -81,7 +84,7 @@ namespace ParlanceBackend
                 });
             });
             services.Configure<ParlanceConfiguration>(Configuration.GetSection("Parlance"));
-            services.AddDbContext<ProjectContext>(options => options.UseSqlite(Utility.Parse(Configuration.GetConnectionString("ProjectContext"))));
+            services.AddDbContext<ProjectContext>(options => options.UseSqlite(Utility.Parse(Configuration.GetConnectionString("ProjectContext"))).EnableSensitiveDataLogging());
             services.AddSingleton<GitService>();
             services.AddSingleton<TranslationFileService>();
             services.AddHostedService<GitPushService>();
@@ -90,7 +93,7 @@ namespace ParlanceBackend
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ParlanceConfiguration> parlanceConfiguration)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ParlanceConfiguration> parlanceConfiguration, ProjectContext context)
         {
             if (env.IsDevelopment())
             {

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ParlanceBackend
 {
@@ -29,8 +30,11 @@ namespace ParlanceBackend
                 try
                 {
                     var context = services.GetRequiredService<ProjectContext>();
-                    context.Database.EnsureCreated();
+                    // context.Database.EnsureCreated();
                     // DbInitializer.Initialize(context);
+                    
+                    //Apply required migrations
+                    context.Database.Migrate();
                 }
                 catch (Exception ex)
                 {
