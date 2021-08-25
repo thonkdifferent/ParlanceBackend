@@ -1,0 +1,49 @@
+.TranslationItem {
+    padding: 9px;
+
+    width: 400px;
+    max-width: 400px;
+    
+    display: grid;
+    grid-template-columns: max-content 1fr; 
+    grid-template-rows: 1fr 1fr; 
+    gap: 6px 6px;
+    grid-template-areas: 
+      "icon source"
+      "icon translation";
+
+    cursor: pointer;
+}
+
+.SourceText {
+    /* text-overflow: ellipsis; */
+    overflow: hidden;
+    white-space: nowrap;
+    grid-area: source;
+}
+
+.TranslationText {
+    opacity: 0.5;
+    /* text-overflow: ellipsis; */
+    overflow: hidden;
+    white-space: nowrap;
+    grid-area: translation;
+}
+
+.TranslationText:dir(ltr), .SourceText:dir(ltr) {
+    mask-image: linear-gradient(to right, black 80%, transparent 100%);
+}
+
+.TranslationText:dir(rtl), .SourceText:dir(rtl) {
+    mask-image: linear-gradient(to left, black 80%, transparent 100%);
+}
+
+.Selected {
+    background-color: rgb(0, 100, 100);
+    color: white;
+}
+
+.Icon {
+    grid-area: icon;
+    align-self: center;
+}

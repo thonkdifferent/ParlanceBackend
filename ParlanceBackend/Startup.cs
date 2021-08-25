@@ -18,12 +18,15 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using ParlanceBackend.Authentication;
 
 namespace ParlanceBackend
 {
     public class Startup
     {
+        private IOptions<ParlanceConfiguration> _parlanceConfiguration;
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,6 +38,11 @@ namespace ParlanceBackend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "Frontend/build";
+            });
+            
             //services.AddDbContext<ProjectContext>(opt => opt.UseInMemoryDatabase("VictorsProjectCollection"));
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest).AddOData();
             services.AddControllers();
@@ -88,6 +96,7 @@ namespace ParlanceBackend
             services.AddSingleton<GitService>();
             services.AddSingleton<TranslationFileService>();
             services.AddHostedService<GitPushService>();
+            
 
             // services.AddDbContext<ProjectContext>(options => options.UseSqlite("Data Source=database.db;"));
         }
@@ -95,21 +104,14 @@ namespace ParlanceBackend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ParlanceConfiguration> parlanceConfiguration, ProjectContext context)
         {
+            _parlanceConfiguration = parlanceConfiguration;
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ParlanceBackend v1"));
             }
-
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Utility.Parse(parlanceConfiguration.Value.StaticFilesPath))
-                {
-                    
-                },
-                RequestPath = ""
-            });
             
             app.UseRouting();
 
@@ -118,6 +120,18 @@ namespace ParlanceBackend
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "Frontend";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer("start");
+                }
             });
         }
     }

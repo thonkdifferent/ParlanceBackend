@@ -14,7 +14,7 @@ namespace ParlanceBackend.TranslationFiles {
 
         public byte[] Save(TranslationFile file)
         {
-            MemoryStream stream = new MemoryStream();
+            var stream = new MemoryStream();
             TextWriter writer = new StreamWriter(stream);
             
             //Write the headers

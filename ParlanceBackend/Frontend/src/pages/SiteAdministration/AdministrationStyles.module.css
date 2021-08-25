@@ -1,0 +1,13 @@
+.PageTitle {
+    padding: 9px;
+    font-size: 15pt;
+}
+
+.PageDescription {
+    padding-left: 9px;
+    padding-bottom: 9px;
+}
+
+.PageContainer {
+    flex-grow: 1;
+}

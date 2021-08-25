@@ -1,0 +1,12 @@
+.Header {
+    display: flex;
+
+    padding: 9px;
+    background-color: #006464;
+    color: white;
+    align-items: center;
+}
+
+.Icon {
+
+}

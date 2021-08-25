@@ -1,0 +1,16 @@
+.Form {
+    padding-top: 9px;
+    display: grid;
+    grid-template-columns: max-content 100fr;
+    justify-items: stretch;
+    align-items: center;
+    column-gap: 9px;
+}
+
+.Form input {
+    color: white;
+    background-color: transparent;
+
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}

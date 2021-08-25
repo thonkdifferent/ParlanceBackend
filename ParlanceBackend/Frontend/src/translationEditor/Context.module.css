@@ -1,0 +1,8 @@
+.ContextHeader {
+    position: sticky;
+    top: 0px;
+    padding: 3px;
+    
+    background: rgb(60, 60, 60);
+    z-index: 10;
+}

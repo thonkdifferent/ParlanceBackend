@@ -1,0 +1,30 @@
+.TranslatedText {
+    padding: 9px;
+
+    border: none;
+    background-color: rgba(0, 100, 100, 0.5);
+    color: white;
+    min-height: 100px;
+    vertical-align: top;
+}
+
+.TranslatedText:read-only {
+    background-color: rgba(100, 100, 100);
+}
+
+.Introduction {
+    padding: 3px;
+    text-transform: uppercase;
+}
+
+.FailingCheck {
+    background-color: rgb(255, 100, 0);
+    color: black;
+    padding: 9px;
+    display: grid;
+}
+
+.CheckTitle {
+    text-transform: uppercase;
+    font-weight: bold;
+}

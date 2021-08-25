@@ -1,0 +1,12 @@
+body {
+    margin: 0px;
+    font-family: 'Contemporary';
+
+    background: rgb(40, 40, 40);
+    color: white;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
