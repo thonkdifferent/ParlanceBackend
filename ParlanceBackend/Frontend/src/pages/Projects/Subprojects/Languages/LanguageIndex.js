@@ -49,7 +49,7 @@ class ProjectLanguageSelect extends React.Component {
 
     renderLanguages() {
         return [
-            ...(this.state.parentSubproject?.languages.filter(lang => lang.identifier !== this.state.parentSubproject.baseLang).map(lang => <Link to={`${this.props.match.url}/${lang.identifier}`}>{tags(lang.identifier.replace("_", "-")).language().descriptions()[0]} ({lang.identifier})</Link>) || []),
+            ...(this.state.parentSubproject?.languages.filter(lang => lang.identifier !== this.state.parentSubproject.baseLang).map(lang => <Link to={`${this.props.match.url}/${lang.identifier}`}>{languageManager.getLanguage(lang.identifier)?.name}</Link>) || []),
             <div onClick={this.addLanguage.bind(this)}>Add a language</div>
         ]
     }
