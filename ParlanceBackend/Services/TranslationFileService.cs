@@ -74,8 +74,9 @@ namespace ParlanceBackend.Services
             }
             //get the filename
             var translationFileName = TranslationFileFilename(subprojectObj, language);
+            var baseTranslationFileName = TranslationFileFilename(subprojectObj, subprojectObj.BaseLang);
 
-            ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).Update(translationFileName, delta);
+            ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).Update(translationFileName, baseTranslationFileName, delta);
         }
 
         /// <summary>
@@ -95,11 +96,12 @@ namespace ParlanceBackend.Services
             }
             //get the full translation file path
             var translationFileName = TranslationFileFilename(subprojectObj, language);
-
             if (!File.Exists(translationFileName)) throw new FileNotFoundException("Translation file could not be found");
 
+            var baseTranslationFileName = TranslationFileFilename(subprojectObj, subprojectObj.BaseLang);
+
             //call the appropriate function
-            return await ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).LoadFromFile(translationFileName);
+            return await ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).LoadFromFile(translationFileName, baseTranslationFileName);
         }
 
         public async Task<TranslationFile> CreateTranslationFile(ProjectPrivate project, string subproject, string language)
@@ -114,7 +116,7 @@ namespace ParlanceBackend.Services
             if (File.Exists(translationFileName)) throw new FileNotFoundException("Translation file could not be found");
 
             var baseTranslationFileName = TranslationFileFilename(subprojectObj, subprojectObj.BaseLang);
-            var baseTranslationFile = await ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).LoadFromFile(baseTranslationFileName);
+            var baseTranslationFile = await ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).LoadFromFile(baseTranslationFileName, baseTranslationFileName);
 
             baseTranslationFile.DestinationLanguage = language;
             foreach (var message in baseTranslationFile.Messages)

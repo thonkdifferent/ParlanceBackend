@@ -129,12 +129,8 @@ namespace ParlanceBackend.Controllers
                     StatusCode = 406
                 };
             }
-            catch (Exception e)//if something else happened
-            {
-                return InternalError(e);
-            }
             
-            return File(ITranslationFileFormat.LoaderForFormat("gettext").Save(translationFile), "application/octet-stream",
+            return File(await ITranslationFileFormat.LoaderForFormat("gettext").Save(translationFile), "application/octet-stream",
                 type);
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using ParlanceBackend.Models;
@@ -15,7 +16,7 @@ namespace ParlanceBackend.TranslationFiles {
         /// </summary>
         /// <param name="bytes">The byte array with the XML document</param>
         /// <returns>The parsed translation file</returns>
-        public TranslationFile LoadFromBytes(byte[] bytes)
+        public async Task<TranslationFile> LoadFromBytes(byte[] bytes, byte[] baseFile)
         {
             return ParseXml(Encoding.UTF8.GetString(bytes));
         }
@@ -64,13 +65,16 @@ namespace ParlanceBackend.TranslationFiles {
                 Messages = messages.ToArray()
             };
         }
+
         /// <summary>
         /// Update a Qt TS file
         /// </summary>
         /// <param name="fileName">File path</param>
+        /// <param name="baseFileName"></param>
         /// <param name="delta">New information</param>
-        public void Update(string fileName, TranslationDelta delta) {
-            File.WriteAllText(fileName, UpdateXml(File.ReadAllText(fileName), delta));
+        public async Task Update(string fileName, string baseFileName, TranslationDelta delta)
+        {
+            await File.WriteAllTextAsync(fileName, UpdateXml(await File.ReadAllTextAsync(fileName), delta));
         }
 
         public string TransformLanguageName(string languageName)
@@ -151,7 +155,7 @@ namespace ParlanceBackend.TranslationFiles {
             return modifiedXml;
         }
 
-        public byte[] Save(TranslationFile file)
+        public async Task<byte[]> Save(TranslationFile file)
         {
             var doc = new XDocument(
                 new XDeclaration("1.0", "utf-8", "yes"),

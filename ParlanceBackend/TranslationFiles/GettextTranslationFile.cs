@@ -2,26 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Karambolo.PO;
 using ParlanceBackend.Models;
 
 namespace ParlanceBackend.TranslationFiles {
     class GettextTranslationFile : ITranslationFileFormat {
-        public TranslationFile LoadFromBytes(byte[] bytes) {
+        public async Task<TranslationFile> LoadFromBytes(byte[] bytes, byte[] baseFile) {
             //Create a translation file and read in the information
             return new TranslationFile();
         }
 
-        public byte[] Save(TranslationFile file)
+        public async Task<byte[]> Save(TranslationFile file)
         {
             var stream = new MemoryStream();
             TextWriter writer = new StreamWriter(stream);
             
             //Write the headers
-            writer.WriteLine("msgid \"\"");
-            writer.WriteLine("msgstr \"\"");
-            writer.WriteLine("\"X-Generator: Parlance\"");
-            writer.WriteLine();
+            await writer.WriteLineAsync("msgid \"\"");
+            await writer.WriteLineAsync("msgstr \"\"");
+            await writer.WriteLineAsync("\"X-Generator: Parlance\"");
+            await writer.WriteLineAsync();
             
             //Write the messages
             foreach (var message in file.Messages)
@@ -31,29 +32,29 @@ namespace ParlanceBackend.TranslationFiles {
                 if (message.Unfinished) comments.Add("#, fuzzy");
                 if (comments != null) writer.WriteLine(string.Join(",\n", comments));
                 
-                writer.WriteLine($"msgctxt \"{message.Context}\"");
-                writer.WriteLine($"msgid \"{message.Source}\"");
+                await writer.WriteLineAsync($"msgctxt \"{message.Context}\"");
+                await writer.WriteLineAsync($"msgid \"{message.Source}\"");
                 if (message.Translation.Length == 1)
                 {
-                    writer.WriteLine($"msgstr \"{message.Translation[0]}\"");
+                    await writer.WriteLineAsync($"msgstr \"{message.Translation[0]}\"");
                 }
                 else
                 {
-                    writer.WriteLine($"msgid_plural \"{message.Source}\"");
+                    await writer.WriteLineAsync($"msgid_plural \"{message.Source}\"");
                     for (var i = 0; i < message.Translation.Length; i++)
                     {
-                        writer.WriteLine($"msgstr[{i}] \"{message.Translation[i]}\"");
+                        await writer.WriteLineAsync($"msgstr[{i}] \"{message.Translation[i]}\"");
                     }
                 }
-                writer.WriteLine();
+                await writer.WriteLineAsync();
             }
             
-            writer.Flush();
+            await writer.FlushAsync();
             stream.Flush();
             return stream.ToArray();
         }
 
-        public void Update(string fileName, TranslationDelta delta)
+        public async Task Update(string fileName, string baseFileName, TranslationDelta delta)
         {
             throw new NotImplementedException();
         }

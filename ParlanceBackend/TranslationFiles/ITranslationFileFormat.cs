@@ -7,9 +7,9 @@ namespace ParlanceBackend.TranslationFiles
 {
     interface ITranslationFileFormat
     {
-        public TranslationFile LoadFromBytes(byte[] bytes);
-        public byte[] Save(TranslationFile file);
-        public void Update(string fileName, TranslationDelta delta);
+        public Task<TranslationFile> LoadFromBytes(byte[] bytes, byte[] baseFile);
+        public Task<byte[]> Save(TranslationFile file);
+        public Task Update(string fileName, string baseFileName, TranslationDelta delta);
         public string TransformLanguageName(string languageName);
         public string NormaliseLanguageName(string languageName);
         
@@ -26,14 +26,14 @@ namespace ParlanceBackend.TranslationFiles
             _ => throw new ArgumentException("Unknown File Type")
         };
 
-        public async Task<TranslationFile> LoadFromFile(string fileName)
+        public async Task<TranslationFile> LoadFromFile(string fileName, string baseFile)
         {
-            return LoadFromBytes(await File.ReadAllBytesAsync(fileName));
+            return await LoadFromBytes(await File.ReadAllBytesAsync(fileName), await File.ReadAllBytesAsync(baseFile));
         }
 
         public async Task SaveToFile(string fileName, TranslationFile file)
         {
-            await File.WriteAllBytesAsync(fileName, Save(file));
+            await File.WriteAllBytesAsync(fileName, await Save(file));
         }
     }
 }
