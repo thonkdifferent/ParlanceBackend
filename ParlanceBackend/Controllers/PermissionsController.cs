@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using accounts.DBus;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -79,7 +80,7 @@ namespace ParlanceBackend.Controllers
         
         [HttpGet("languages")]
         [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
-        public async Task<ActionResult<AllowedLanguages>> GetAllLanguagePermissions()
+        public async Task<ActionResult<AllowedLanguagesPublic>> GetAllLanguagePermissions()
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, ("", ""), ProjectsAuthorizationHandler.ModifyPermissions);
 
@@ -87,8 +88,22 @@ namespace ParlanceBackend.Controllers
             {
                 return Unauthorized();
             }
-            
-            return Ok(await _context.AllowedLanguages.ToListAsync());
+
+            await _context.Languages.ToListAsync();
+            // return Ok(await _context.AllowedLanguages.Where(x => true).ToListAsync());
+
+            var retval = await Task.WhenAll(_context.AllowedLanguages.AsEnumerable().Select(async language =>
+            {
+                var userPath = await _accounts.AccountsManager.UserByIdAsync(language.UserId);
+                var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userPath);
+                
+                return new AllowedLanguagesPublic
+                {
+                    Language = language.Language.Identifier,
+                    UserName = await userProxy.GetUsernameAsync()
+                };
+            }));
+            return Ok(retval);
         }
     }
 }

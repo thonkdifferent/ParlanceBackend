@@ -16,6 +16,10 @@ class LanguageManager {
         }, {});
     }
     
+    sortedLanguages() {
+        return Object.values(this.languages).sort((first, second) => first.name > second.name);
+    }
+    
     getLanguage(lang) {
         for (let transformed of [
             lang.toLowerCase(),

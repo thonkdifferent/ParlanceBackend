@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using ParlanceBackend.Authentication;
+using Tmds.DBus;
 
 namespace ParlanceBackend
 {
@@ -97,6 +98,12 @@ namespace ParlanceBackend
             services.AddSingleton<GitService>();
             services.AddSingleton<TranslationFileService>();
             services.AddHostedService<GitPushService>();
+            
+            
+            var accountsConnection = new Connection(Configuration.GetSection("Parlance").GetSection("AccountsBus").Value);
+            accountsConnection.ConnectAsync().Wait();
+            services.AddSingleton(accountsConnection);
+            
             services.AddSingleton<AccountsService>();
 
             // services.AddDbContext<ProjectContext>(options => options.UseSqlite("Data Source=database.db;"));

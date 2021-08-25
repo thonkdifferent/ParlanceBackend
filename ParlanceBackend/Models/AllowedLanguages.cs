@@ -8,4 +8,10 @@ namespace ParlanceBackend.Models
         public ulong UserId { get; set; }
         public Language Language { get; set; }
     }
+
+    public class AllowedLanguagesPublic
+    {
+        public string UserName { get; set; }
+        public string Language { get; set; }
+    }
 }

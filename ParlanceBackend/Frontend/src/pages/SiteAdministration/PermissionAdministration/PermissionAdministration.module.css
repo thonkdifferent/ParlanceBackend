@@ -1,0 +1,14 @@
+.PermissionType {
+    border-top: 1px solid rgb(80, 80, 80);
+    padding: 9px;
+
+    cursor: pointer;
+}
+
+.PermissionType:hover {
+    background-color: rgba(0, 100, 100, 0.5);
+}
+
+.PermissionType:active {
+    background-color: rgba(0, 100, 100);
+}
