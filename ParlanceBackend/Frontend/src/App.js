@@ -16,6 +16,8 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 
+import Styles from "./App.module.css"
+
 // This site has 3 pages, all of which are rendered
 // dynamically in the browser (not server rendered).
 //
@@ -37,7 +39,7 @@ class App extends React.Component {
     render() {
         return <React.Suspense fallback={<div />}>
             <Router>
-                <div>
+                <div className={Styles.MainContainer}>
                     <Header projectManager={this.state.projectManager} />
                     <Switch>
                         <Route exact path="/">

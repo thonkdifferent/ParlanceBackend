@@ -5,6 +5,7 @@ import Styles from './LoginModal.module.css';
 import Fetch from '../utils/Fetch';
 import Modal from '../components/Modal';
 import userManager from '../utils/UserManager';
+import ProgressSpinner from "../components/ProgressSpinner";
 
 class LoginModal extends React.Component {
     constructor(props) {
@@ -196,10 +197,10 @@ class LoginModal extends React.Component {
                 </div>
             </Modal>,
             loginProcessing: <Modal heading="Log In" >
-            <Modal.ModalProgressSpinner message={"Logging in..."} />
+                <ProgressSpinner message={"Logging in..."} />
             </Modal>,
             registerProcessing: <Modal heading="Register" >
-            <Modal.ModalProgressSpinner message={"Creating account..."} />
+                <ProgressSpinner message={"Creating account..."} />
             </Modal>,
             disabled: <Modal heading="Disabled Account" buttons={["OK"]} onButtonClick={this.buttonClick.bind(this)}>
                 Sorry, you can't be logged in as this account is disbled.

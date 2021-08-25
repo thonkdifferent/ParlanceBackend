@@ -1,0 +1,28 @@
+.ErrorPage {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr repeat(3, min-content) 1fr;
+    grid-template-areas:
+        "pad1"
+        "picture"
+        "title"
+        "message"
+        "pad2";
+    
+    align-items: center;
+    justify-content: center;
+    
+    row-gap: 9px;
+    flex-grow: 1;
+    
+    text-align: center;
+}
+
+.Title {
+    grid-area: title;
+    font-size: 15pt;
+}
+
+.Message {
+    grid-area: message;
+}

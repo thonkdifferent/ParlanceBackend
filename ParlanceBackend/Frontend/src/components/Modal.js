@@ -69,14 +69,4 @@ Modal.OkButton = {
     onClick: () => Modal.unmount()
 };
 
-class ModalProgressSpinner extends React.Component {
-    render() {
-        return <div className={Styles.ModalProgressSpinner}>
-            {this.props?.message}
-        </div>
-    }
-}
-
-Modal.ModalProgressSpinner = ModalProgressSpinner;
-
 export default Modal;

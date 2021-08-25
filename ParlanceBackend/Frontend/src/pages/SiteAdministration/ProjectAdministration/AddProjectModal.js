@@ -3,7 +3,7 @@ import React from 'react';
 import Fetch from '../../../utils/Fetch';
 import Modal from '../../../components/Modal';
 import Form from '../../../components/Form';
-
+import ProgressSpinner from "../../../components/ProgressSpinner";
 
 
 class AddProjectModal extends React.Component {
@@ -69,7 +69,7 @@ class AddProjectModal extends React.Component {
                 </Form>
             </Modal>,
             adding: <Modal heading="Add New Project">
-                <Modal.ModalProgressSpinner message={"Cloning Repository..."} />
+                <ProgressSpinner message={"Cloning Repository..."} />
             </Modal>,
             error: <Modal heading="Add New Project" buttons={[
                 Modal.OkButton

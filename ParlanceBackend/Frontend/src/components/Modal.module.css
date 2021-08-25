@@ -11,6 +11,7 @@
     bottom: 0px;
 
     background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
 }
 
 .ModalContainer {
@@ -50,19 +51,11 @@
 }
 
 .ModalButton:active {
-    background-color: rgba(0, 100, 100);
+    background-color: rgb(0, 100, 100);
 }
 
 .ModalButton:not(:last-child) {
     border-right: 1px solid rgb(80, 80, 80);
-}
-
-.ModalProgressSpinner {
-    display: flex;
-    flex-grow: 1;
-
-    align-items: center;
-    justify-content: center;
 }
 
 @media (max-width: 600px) {

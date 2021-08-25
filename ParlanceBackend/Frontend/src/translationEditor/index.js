@@ -18,6 +18,7 @@ import Styles from "./index.module.css";
 import Context from "./Context";
 import TranslationArea from './TranslationArea';
 import TranslationItem from './TranslationItem';
+import ProgressSpinner from "../components/ProgressSpinner";
 
 class TranslationEditor extends React.Component {
     constructor(props) {
@@ -160,7 +161,7 @@ class TranslationEditor extends React.Component {
                 </div>
             }
         } else {
-            return "Hang on...";
+            return <ProgressSpinner message="Preparing the translation file..."/>
         }
     }
 }

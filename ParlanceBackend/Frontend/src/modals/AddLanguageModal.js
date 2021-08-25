@@ -5,6 +5,7 @@ import Modal from '../components/Modal';
 import ModalList from '../components/ModalList';
 
 import userManager from '../utils/UserManager';
+import ProgressSpinner from "../components/ProgressSpinner";
 
 class AddLanguageModal extends React.Component {
     constructor(props) {
@@ -59,7 +60,7 @@ class AddLanguageModal extends React.Component {
                 </ModalList>
             </Modal>,
             adding: <Modal heading="Add a language">
-                <Modal.ModalProgressSpinner message={"Adding the language..."} />
+                <ProgressSpinner message={"Adding the language..."} />
             </Modal>,
             error: <Modal heading="Add a language" buttons={[
                 Modal.OkButton

@@ -4,6 +4,7 @@ import Fetch from '../../../utils/Fetch';
 import Modal from '../../../components/Modal';
 import Form from '../../../components/Form';
 import ModalList from '../../../components/ModalList';
+import ProgressSpinner from "../../../components/ProgressSpinner";
 
 class EditProjectModal extends React.Component {
     constructor(props) {
@@ -73,7 +74,7 @@ class EditProjectModal extends React.Component {
                 Delete {this.props.project} from Parlance? You'll need to add it again to use it.
             </Modal>,
             deleting: <Modal heading="Delete Project">
-            <Modal.ModalProgressSpinner message={"Deleting the project..."} />
+                <ProgressSpinner message={"Deleting the project..."} />
             </Modal>,
             deleteError: <Modal heading="Delete Project" buttons={[
                 Modal.OkButton
