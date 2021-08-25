@@ -49,7 +49,14 @@ class ProjectLanguageSelect extends React.Component {
     }
 
     addLanguage() {
-        Modal.mount(<AddLanguageModal project={this.props.match.params.project} subproject={this.state.parentSubproject.slug} languages={Object.values(userManager.allowedLanguages())} />)
+        Modal.mount(<AddLanguageModal project={this.props.match.params.project} subproject={this.state.parentSubproject.slug} languages={Object.values(userManager.allowedLanguages()).filter(language => {
+            let knownLanguages = this.state.parentSubproject.languages.map(language => language.identifier);
+            for (let lang of knownLanguages) {
+                if (lang.toLowerCase() === language.identifier.toLowerCase()) return false;
+                if (lang.toLowerCase() === language.identifier.replace("-", "_").toLowerCase()) return false;
+            }
+            return true;
+        })} />)
     }
 
     renderLanguages() {

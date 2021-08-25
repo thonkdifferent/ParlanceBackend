@@ -6,6 +6,7 @@ using accounts.DBus;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ParlanceBackend.Services;
 using Tmds.DBus;
 
 namespace ParlanceBackend.Authentication
@@ -14,10 +15,12 @@ namespace ParlanceBackend.Authentication
     {
         public const string SchemeName = "DBusScheme";
         private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
+        private readonly AccountsService _accounts;
         
-        public DBusAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IOptions<ParlanceConfiguration> parlanceConfiguration) : base(options, logger, encoder, clock)
+        public DBusAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IOptions<ParlanceConfiguration> parlanceConfiguration, AccountsService accounts) : base(options, logger, encoder, clock)
         {
             _parlanceConfiguration = parlanceConfiguration;
+            _accounts = accounts;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -34,18 +37,12 @@ namespace ParlanceBackend.Authentication
             }
 
             var token = authorization.ToString()[7..].Trim();
-
-            var accountsConnection = new Connection(_parlanceConfiguration.Value.AccountsBus);
-            await accountsConnection.ConnectAsync();
             
-            var managerProxy =
-                accountsConnection.CreateProxy<IManager>("com.vicr123.accounts", "/com/vicr123/accounts");
-
             //TODO: handle DBus errors in case token does not work
             try
             {
-                var userPath = await managerProxy.UserForTokenAsync(token);
-                var userProxy = accountsConnection.CreateProxy<IUser>("com.vicr123.accounts", userPath);
+                var userPath = await _accounts.AccountsManager.UserForTokenAsync(token);
+                var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userPath);
                 var id = await userProxy.GetIdAsync();
 
                 var claims = new Claim[]

@@ -11,6 +11,8 @@ namespace ParlanceBackend.TranslationFiles
         public byte[] Save(TranslationFile file);
         public void Update(string fileName, TranslationDelta delta);
         public string TransformLanguageName(string languageName);
+        public string NormaliseLanguageName(string languageName);
+        
 
         private static readonly QtTranslationFile QtLoader = new();
         private static readonly GettextTranslationFile GettextLoader = new();

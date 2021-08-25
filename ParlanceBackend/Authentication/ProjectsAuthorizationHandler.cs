@@ -9,8 +9,6 @@ using ParlanceBackend.Models;
 
 namespace ParlanceBackend.Authentication
 {
-    
-    
     public class ProjectsAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, (string? project, string? language)>
     {
         private readonly ProjectContext _context;
@@ -26,21 +24,27 @@ namespace ParlanceBackend.Authentication
         {
             Name = CreateNewProjectPermission
         };
+        
+        public const string ModifyPermissionsPermission = "ModifyPermissions";
+        public static OperationAuthorizationRequirement ModifyPermissions = new()
+        {
+            Name = ModifyPermissionsPermission
+        };
 
         public ProjectsAuthorizationHandler(ProjectContext context)
         {
             _context = context;
         }
 
-        private async Task<bool> IsSuperuser(string userId)
+        private async Task<bool> IsSuperuser(ulong userId)
         {
-            return await _context.Superusers.FindAsync(ulong.Parse(userId)) is not null;
+            return await _context.Superusers.AnyAsync(user => user.UserId == userId);
         }
         
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement,
             (string project, string language) resource)
         {
-            var userId = context.User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = ulong.Parse(context.User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
 
             if (await IsSuperuser(userId))
             {
@@ -51,13 +55,18 @@ namespace ParlanceBackend.Authentication
             switch (requirement.Name)
             {
                 case UpdateTranslationFilePermission:
-                    if (userId == "5903046")
+                {
+                    if (_context.AllowedLanguages.Any(permission => permission.Language.Identifier == resource.language && permission.UserId == userId))
                     {
                         context.Succeed(requirement);
                     }
+                    
+                    //TODO: Project managers
                     break;
+                }
                 case CreateNewProjectPermission:
-                    //Nothing extra to check here, only superusers can create new projects
+                case ModifyPermissionsPermission:
+                    //Nothing extra to check here, only superusers can perform these actions
                     break;
             }
         }

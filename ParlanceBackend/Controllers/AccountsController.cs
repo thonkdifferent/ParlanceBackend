@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using ParlanceBackend.Authentication;
 using ParlanceBackend.Data;
 using ParlanceBackend.Models;
+using ParlanceBackend.Services;
 using Tmds.DBus;
 
 namespace ParlanceBackend.Controllers
@@ -23,18 +24,14 @@ namespace ParlanceBackend.Controllers
     {
         private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
         private readonly ProjectContext _context;
-        public AccountsController(IOptions<ParlanceConfiguration> parlanceConfiguration, ProjectContext context)
+        private readonly AccountsService _accounts;
+        public AccountsController(IOptions<ParlanceConfiguration> parlanceConfiguration, ProjectContext context, AccountsService accounts)
         {
             _parlanceConfiguration = parlanceConfiguration;
             _context = context;
+            _accounts = accounts;
         }
         
-        private async Task<Connection> AccountsConnection()
-        {
-            var accountsConnection = new Connection(_parlanceConfiguration.Value.AccountsBus);
-            await accountsConnection.ConnectAsync();
-            return accountsConnection;
-        }
         
         [HttpGet("whoami")]
         [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
@@ -46,13 +43,10 @@ namespace ParlanceBackend.Controllers
         [HttpPost("create")]
         public async Task<ActionResult<TokenData>> CreateUser(CreateUserData createData)
         {
-            var accountsConnection = await AccountsConnection();
-            var managerProxy =
-                accountsConnection.CreateProxy<IManager>("com.vicr123.accounts", "/com/vicr123/accounts");
-
+            
             //In the event that any DBus methods throw an exception, return 500 Internal Server Error
-            var newUserObjectPath = await managerProxy.CreateUserAsync(createData.Username, createData.Password, createData.Email);
-            var token = await managerProxy.ProvisionTokenAsync(createData.Username, createData.Password, "Parlance", ImmutableDictionary<string, object>.Empty);
+            var newUserObjectPath = await _accounts.AccountsManager.CreateUserAsync(createData.Username, createData.Password, createData.Email);
+            var token = await _accounts.AccountsManager.ProvisionTokenAsync(createData.Username, createData.Password, "Parlance", ImmutableDictionary<string, object>.Empty);
 
             var tokenData = new TokenData {Token = token};
             return tokenData;
@@ -61,17 +55,13 @@ namespace ParlanceBackend.Controllers
         [HttpPost("provisionToken")]
         public async Task<ActionResult<TokenData>> ProvisionToken(ProvisionTokenData provisionData)
         {
-            var accountsConnection = await AccountsConnection();
-            var managerProxy =
-                accountsConnection.CreateProxy<IManager>("com.vicr123.accounts", "/com/vicr123/accounts");
-
             var extraOptions = new Dictionary<string, object>();
             if (provisionData.OtpToken is not null) extraOptions.Add("otpToken", provisionData.OtpToken);
             if (provisionData.NewPassword is not null) extraOptions.Add("newPassword", provisionData.NewPassword);
 
             try
             {
-                var token = await managerProxy.ProvisionTokenAsync(provisionData.Username, provisionData.Password, "Parlance", extraOptions);
+                var token = await _accounts.AccountsManager.ProvisionTokenAsync(provisionData.Username, provisionData.Password, "Parlance", extraOptions);
                 
                 var tokenData = new TokenData {Token = token};
                 return tokenData;
@@ -114,12 +104,9 @@ namespace ParlanceBackend.Controllers
         public async Task<ActionResult<UserInformationData>> GetUserInformation()
         {
             var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
-            var accountsConnection = await AccountsConnection();
-            var managerProxy =
-                accountsConnection.CreateProxy<IManager>("com.vicr123.accounts", "/com/vicr123/accounts");
 
-            var userObjectPath = await managerProxy.UserByIdAsync(ulong.Parse(userId));
-            var userProxy = accountsConnection.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
 
             UserInformationData information = new()
             {

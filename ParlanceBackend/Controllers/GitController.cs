@@ -33,6 +33,7 @@ namespace ParlanceBackend.Controllers
         [HttpPost("{name}/pull")]
         public async Task<ActionResult> PullGitRepository(string name)
         {
+            //TODO: Check authorization
             var projectInternal = await _context.Projects.FindAsync(name);
 
             if (projectInternal == null)
@@ -48,6 +49,7 @@ namespace ParlanceBackend.Controllers
         [HttpPost("{name}/commitandpush")]
         public async Task<ActionResult> CommitAndPushGitRepository(string name)
         {
+            //TODO: Check authorization
             var projectInternal = await _context.Projects.FindAsync(name);
 
             if (projectInternal == null)

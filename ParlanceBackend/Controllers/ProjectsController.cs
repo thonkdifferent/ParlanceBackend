@@ -150,19 +150,18 @@ namespace ParlanceBackend.Controllers
         [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
         public async Task<ActionResult> UpdateTranslationFile(TranslationDelta delta, string name, string subprojectSlug, string language)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), ProjectsAuthorizationHandler.UpdateTranslationFile);
-
+            var projectInternal = await _context.Projects.FindAsync(name);
+            if (projectInternal is null)
+            {
+                return NotFound();
+            }
+            
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, _translationFile.NormaliseLanguageName(projectInternal, subprojectSlug, language)), ProjectsAuthorizationHandler.UpdateTranslationFile);
             if (!authorizationResult.Succeeded)
             {
                 return Unauthorized();
             }
             
-            var projectInternal = await _context.Projects.FindAsync(name);//find the project
-
-            if (projectInternal == null)
-            {
-                return NotFound();
-            }
             try//update the translation file
             {
                 _translationFile.UpdateTranslationFile(delta, projectInternal, subprojectSlug, language);
@@ -179,8 +178,13 @@ namespace ParlanceBackend.Controllers
         [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
         public async Task<ActionResult> GetTranslationFilePermissions(string name, string subprojectSlug, string language)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), ProjectsAuthorizationHandler.UpdateTranslationFile);
-
+            var projectInternal = await _context.Projects.FindAsync(name);
+            if (projectInternal is null)
+            {
+                return NotFound();
+            }
+            
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, _translationFile.NormaliseLanguageName(projectInternal, subprojectSlug, language)), ProjectsAuthorizationHandler.UpdateTranslationFile);
             if (!authorizationResult.Succeeded)
             {
                 return Unauthorized();
@@ -289,7 +293,7 @@ namespace ParlanceBackend.Controllers
                 return Unauthorized();
             }
             
-            ProjectPrivate project = await _context.Projects.FindAsync(name);
+            var project = await _context.Projects.FindAsync(name);
             if (project == null)
             {
                 return NotFound();

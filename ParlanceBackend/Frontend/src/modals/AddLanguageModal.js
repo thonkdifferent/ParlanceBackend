@@ -12,7 +12,7 @@ class AddLanguageModal extends React.Component {
         super(props);
 
         this.state = {
-            stage: userManager.loggedIn() ? "add" : "login"
+            stage: userManager.loggedIn() ? (this.props.languages.length == 0 ? "empty" : "add") : "login"
         }
     }
 
@@ -45,6 +45,11 @@ class AddLanguageModal extends React.Component {
                 Modal.OkButton
             ]}>
                 To add a language, you'll need to log in to Parlance.
+            </Modal>,
+            empty: <Modal heading="Add a language" buttons={[
+                Modal.OkButton
+            ]}>
+                All languages for which you have permission to translate have already been added. Contact the maintainer if this is not the case.
             </Modal>,
             add: <Modal heading="Add a language" buttons={[
                 Modal.CancelButton

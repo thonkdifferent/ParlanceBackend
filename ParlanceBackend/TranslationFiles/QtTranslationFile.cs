@@ -78,7 +78,15 @@ namespace ParlanceBackend.TranslationFiles {
             var intermediary = languageName.Replace("-", "_");
             var parts = intermediary.Split("_");
             if (parts.Length > 1) parts[1] = parts[1].ToUpper();
-            return String.Join("_", parts);
+            return string.Join("_", parts);
+        }
+
+        public string NormaliseLanguageName(string languageName)
+        {
+            var intermediary = languageName.Replace("_", "-");
+            var parts = intermediary.Split("-");
+            if (parts.Length > 1) parts[1] = parts[1].ToUpper();
+            return string.Join("-", parts);
         }
 
         /// <summary>
@@ -89,7 +97,7 @@ namespace ParlanceBackend.TranslationFiles {
         /// <returns>Updated Qt TS file in XML form</returns>
         public static string UpdateXml(string originalFile, TranslationDelta delta)
         {
-            XDocument xmlDoc = XDocument.Parse(originalFile);
+            var xmlDoc = XDocument.Parse(originalFile);
             var translation = (from tr in xmlDoc.Descendants()
                                   where (string)tr.Element("source") == delta.Key //check if there are with the same key and context
                                   where (string)tr.Parent.Element("name") == delta.Context

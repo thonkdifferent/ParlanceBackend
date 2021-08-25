@@ -43,7 +43,6 @@ namespace ParlanceBackend
                 configuration.RootPath = "Frontend/build";
             });
             
-            //services.AddDbContext<ProjectContext>(opt => opt.UseInMemoryDatabase("VictorsProjectCollection"));
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest).AddOData();
             services.AddControllers();
 
@@ -59,6 +58,8 @@ namespace ParlanceBackend
                     policy => policy.Requirements.Add(ProjectsAuthorizationHandler.UpdateTranslationFile));
                 options.AddPolicy(ProjectsAuthorizationHandler.CreateNewProjectPermission,
                     policy => policy.Requirements.Add(ProjectsAuthorizationHandler.CreateNewProject));
+                options.AddPolicy(ProjectsAuthorizationHandler.ModifyPermissionsPermission,
+                    policy => policy.Requirements.Add(ProjectsAuthorizationHandler.ModifyPermissions));
             });
             services.AddScoped<IAuthorizationHandler, ProjectsAuthorizationHandler>();
             
@@ -96,7 +97,7 @@ namespace ParlanceBackend
             services.AddSingleton<GitService>();
             services.AddSingleton<TranslationFileService>();
             services.AddHostedService<GitPushService>();
-            
+            services.AddSingleton<AccountsService>();
 
             // services.AddDbContext<ProjectContext>(options => options.UseSqlite("Data Source=database.db;"));
         }

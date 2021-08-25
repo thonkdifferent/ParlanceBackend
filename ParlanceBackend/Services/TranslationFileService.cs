@@ -126,5 +126,17 @@ namespace ParlanceBackend.Services
 
             return baseTranslationFile;
         }
+
+        public string NormaliseLanguageName(ProjectPrivate project, string subproject, string language)
+        {
+            
+            var subprojectObj = FindSubproject(project, subproject);
+            if (subprojectObj == null)
+            {
+                throw new FileNotFoundException("Unable to find subproject");
+            }
+
+            return ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).NormaliseLanguageName(language);
+        }
     }
 }

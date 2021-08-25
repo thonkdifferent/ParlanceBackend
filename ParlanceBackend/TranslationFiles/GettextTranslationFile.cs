@@ -62,5 +62,10 @@ namespace ParlanceBackend.TranslationFiles {
         {
             return languageName;
         }
+
+        public string NormaliseLanguageName(string languageName)
+        {
+            return languageName;
+        }
     }
 }
