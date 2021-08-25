@@ -16,11 +16,25 @@ namespace ParlanceBackend.Services
         internal Connection Bus => _accountsConnection;
         internal IManager AccountsManager => _manager;
 
-        public AccountsService(IOptions<ParlanceConfiguration> parlanceConfiguration, Connection accountsConnection)
+        public AccountsService(IOptions<ParlanceConfiguration> parlanceConfiguration)
         {
             _parlanceConfiguration = parlanceConfiguration;
-            _accountsConnection = accountsConnection;
 
+            initialiseConnection().Wait();
+        }
+
+        async Task initialiseConnection()
+        {
+            _accountsConnection = new Connection(_parlanceConfiguration.Value.AccountsBus);
+            _accountsConnection.StateChanged += async (sender, args) =>
+            {
+                if (args.State == ConnectionState.Disconnected)
+                {
+                    //Attempt to reconnect
+                    await initialiseConnection();
+                }
+            };
+            await _accountsConnection.ConnectAsync();
             _manager = _accountsConnection.CreateProxy<IManager>("com.vicr123.accounts", "/com/vicr123/accounts");
         }
 

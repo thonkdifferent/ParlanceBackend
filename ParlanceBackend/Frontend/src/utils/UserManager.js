@@ -13,6 +13,7 @@ class UserManager extends EventEmitter {
     #email;
     #isSuperuser;
     #allowedLanguages;
+    #verified;
 
     constructor() {
         super();
@@ -21,6 +22,7 @@ class UserManager extends EventEmitter {
         this.#email = "";
         this.#isSuperuser = false;
         this.#allowedLanguages = {};
+        this.#verified = false;
 
         this.refreshUserData();
     }
@@ -35,9 +37,9 @@ class UserManager extends EventEmitter {
         await this.refreshUserData();
     }
 
-    async openLoginModal() {
+    async openLoginModal(history) {
         if (this.loggedIn()) {
-            Modal.mount(<UserProfileModal />)
+            Modal.mount(<UserProfileModal history={history} />)
         } else {
             await new Promise((res, rej) => {
                 Modal.mount(<LoginModal />)
@@ -56,6 +58,7 @@ class UserManager extends EventEmitter {
 
                 this.#username = userData.username;
                 this.#email = userData.email;
+                this.#verified = userData.verified;
                 this.#isSuperuser = permissionData.superuser;
                 this.#allowedLanguages = permissionData.allowedLanguages.reduce((languages, language) => {
                     languages[language.identifier.toLowerCase()] = language;
@@ -70,6 +73,7 @@ class UserManager extends EventEmitter {
             this.#email = "";
             this.#isSuperuser = false;
             this.#allowedLanguages = {};
+            this.#verified = false;
         }
         this.emit("userChanged");
     }
@@ -84,6 +88,14 @@ class UserManager extends EventEmitter {
 
     isSuperuser() {
         return this.#isSuperuser;
+    }
+    
+    emailAddress() {
+        return this.#email;
+    }
+    
+    isVerified() {
+        return this.#verified;
     }
     
     allowedLanguages() {

@@ -105,29 +105,36 @@ class LoginModal extends React.Component {
             await userManager.performLogin(response.token);
             Modal.unmount();
         } catch (errorResponse) {
-            let response = await errorResponse.json();
-            console.log("Login error!");
+            try {
+                let response = await errorResponse.json();
+                console.log("Login error!");
 
-            switch (response.error) {
-                case "incorrectCredentials":
-                    this.setState({
-                        error: "Check your credentials and try again."
-                    });
-                    this.changeStage("login");
-                    break;
-                case "passwordResetRequired":
-                    break;
-                case "disabledAccount":
-                    this.changeStage("disabled");
-                    break;
-                case "twofactorRequired":
-                    this.changeStage("twoFactor");
-                    break;
-                default:
-                    this.setState({
-                        error: "Sorry, we couldn't log you in."
-                    });
-                    this.changeStage("login");
+                switch (response.error) {
+                    case "incorrectCredentials":
+                        this.setState({
+                            error: "Check your credentials and try again."
+                        });
+                        this.changeStage("login");
+                        break;
+                    case "passwordResetRequired":
+                        break;
+                    case "disabledAccount":
+                        this.changeStage("disabled");
+                        break;
+                    case "twofactorRequired":
+                        this.changeStage("twoFactor");
+                        break;
+                    default:
+                        this.setState({
+                            error: "Sorry, we couldn't log you in."
+                        });
+                        this.changeStage("login");
+                }
+            } catch {
+                this.setState({
+                    error: "Sorry, we couldn't log you in."
+                });
+                this.changeStage("login");
             }
         }
     }

@@ -34,6 +34,7 @@ class AddLanguageModal extends React.Component {
         try {
             let projectDetails = await Fetch.post(`/projects/${this.props.project}/${this.props.subproject}/${language}/create`, {});
             Modal.unmount();
+            this.props.history.push(`${this.props.subproject}/${language}`);
         } catch {
             this.changeStage("error");
         }

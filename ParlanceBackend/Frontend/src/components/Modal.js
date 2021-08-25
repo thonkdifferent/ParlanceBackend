@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Styles from './Modal.module.css';
+import { withTranslation } from 'react-i18next';
 
 class Modal extends React.Component {
     render() {
@@ -12,7 +13,11 @@ class Modal extends React.Component {
                 <div className={Styles.ModalButtonContainer}>
                     {this.props.buttons?.map(button => {
                         if (typeof button === "object") {
-                            return <div onClick={button.onClick} className={Styles.ModalButton} key={button.text}>{button.text}</div>
+                            if (button.text) {
+                                return <div onClick={button.onClick} className={Styles.ModalButton} key={button.text}>{button.text}</div>
+                            } else {
+                                return <div onClick={button.onClick} className={Styles.ModalButton} key={button.textRaw}>{this.props.t(button.textRaw)}</div>
+                            }
                         } else {
                             //deprecated
                             return <div onClick={this.props.onButtonClick.bind(this, button)} className={Styles.ModalButton} key={button}>{button}</div>
@@ -60,13 +65,17 @@ class Modal extends React.Component {
     }
 }
 
-Modal.CancelButton = {
-    text: "Cancel",
-    onClick: () => Modal.unmount()
-};
-Modal.OkButton = {
-    text: "OK",
-    onClick: () => Modal.unmount()
-};
 
-export default Modal;
+let exported = withTranslation()(Modal);
+exported.CancelButton = {
+    textRaw: "BUTTON_CANCEL",
+    onClick: () => Modal.unmount()
+};
+exported.OkButton = {
+    textRaw: "BUTTON_OK",
+    onClick: () => Modal.unmount()
+};
+exported.mount = Modal.mount;
+exported.unmount = Modal.unmount;
+
+export default exported;

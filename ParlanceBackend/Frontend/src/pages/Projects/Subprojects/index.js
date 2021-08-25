@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import Styles from "./index.module.css";
+import { withTranslation } from 'react-i18next';
 
 import SubprojectIndex from "./SubprojectIndex";
 import Languages from "./Languages";
@@ -25,7 +26,7 @@ class Subprojects extends React.Component {
                 <Route exact path={`${this.props.match.path}/`}>
                     <SubprojectSidebar projectManager={this.props.projectManager} />
                     {/*<SubprojectIndex projectManager={this.props.projectManager} />*/}
-                    <ErrorPage title="Select a language" message="Select a language to get started!" />
+                    <ErrorPage title={this.props.t("SELECT_LANGUAGE")} message="Select a language to get started!" />
                 </Route>
                 <Route path={`${this.props.match.path}/:subproject`}>
                     <Languages projectManager={this.props.projectManager} />
@@ -35,4 +36,4 @@ class Subprojects extends React.Component {
     }
 }
 
-export default withRouter(Subprojects);
+export default withRouter(withTranslation()(Subprojects));

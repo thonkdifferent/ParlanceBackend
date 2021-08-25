@@ -19,6 +19,7 @@ import Context from "./Context";
 import TranslationArea from './TranslationArea';
 import TranslationItem from './TranslationItem';
 import ProgressSpinner from "../components/ProgressSpinner";
+import ErrorPage from "../components/ErrorPage";
 
 class TranslationEditor extends React.Component {
     constructor(props) {
@@ -148,7 +149,7 @@ class TranslationEditor extends React.Component {
         if (this.state.po) {
             if (this.state.po.hasError) {
                 // return "There was an error loading the translation file.";
-                return this.state.po.hasError.message;
+                return <ErrorPage title="There was an error loading the translation file." message={this.state.po.hasError.message} />
             } else {
                 return <div className={Styles.EditorRoot}>
                     <div className={Styles.ContextListWrapper}>

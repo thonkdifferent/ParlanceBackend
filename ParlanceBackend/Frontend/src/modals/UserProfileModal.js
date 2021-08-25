@@ -29,10 +29,21 @@ class UserProfileModal extends React.Component {
         if (userManager.isSuperuser()) {
             items.push({
                 text: "Parlance Administration",
-                onClick: () => window.location = "/admin"
+                onClick: () => {
+                    this.props.history.push("/admin");
+                    Modal.unmount();
+                }
             });
         }
 
+        items.push({
+            text: "Account",
+            onClick: () => {
+                this.props.history.push("/account");
+                Modal.unmount();
+            }
+        });
+        
         return items;
     }
 

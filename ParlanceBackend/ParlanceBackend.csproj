@@ -36,4 +36,29 @@
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Frontend\build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Frontend\build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Frontend\build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Frontend\build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Frontend\build\asset-manifest.json" />
+    <_ContentIncludedByDefault Remove="Frontend\build\manifest.json" />
+    <_ContentIncludedByDefault Remove="Frontend\build\translations\en\translation.json" />
+    <_ContentIncludedByDefault Remove="Frontend\build\translations\en\translation_old.json" />
+    <_ContentIncludedByDefault Remove="Frontend\public\translations\dev\translation.json" />
+    <_ContentIncludedByDefault Remove="Frontend\public\translations\dev\translation_old.json" />
+  </ItemGroup>
+
 </Project>

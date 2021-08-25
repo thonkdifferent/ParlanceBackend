@@ -35,7 +35,7 @@ class ProgressSpinner extends React.Component {
     }
 
     render() {
-        return <div className={Styles.ProgressSpinner}>
+        return <div style={this.props.style} className={Styles.ProgressSpinner}>
             <div className={Styles.Spinner} ref={this.spinnerRef} />
             {this.props?.message}
         </div>

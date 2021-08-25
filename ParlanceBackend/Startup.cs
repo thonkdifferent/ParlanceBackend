@@ -100,10 +100,6 @@ namespace ParlanceBackend
             services.AddHostedService<GitPushService>();
             
             
-            var accountsConnection = new Connection(Configuration.GetSection("Parlance").GetSection("AccountsBus").Value);
-            accountsConnection.ConnectAsync().Wait();
-            services.AddSingleton(accountsConnection);
-            
             services.AddSingleton<AccountsService>();
 
             // services.AddDbContext<ProjectContext>(options => options.UseSqlite("Data Source=database.db;"));

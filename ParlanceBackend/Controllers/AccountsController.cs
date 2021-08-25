@@ -130,5 +130,42 @@ namespace ParlanceBackend.Controllers
             };
             return data;
         }
+        
+        
+        [HttpPost("me/verify/resend")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> ResendVerificationEmail()
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+
+            await userProxy.ResendVerificationEmailAsync();
+
+            return NoContent();
+        }
+        
+        [HttpPost("me/verify")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> VerifyEmailAddress(VerifyEmailAddressData data)
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+
+            try
+            {
+                await userProxy.VerifyEmailAsync(data.VerificationCode);
+            }
+            catch (DBusException e)
+            {
+                if (e.ErrorName == "com.vicr123.accounts.Error.VerificationCodeIncorrect") return Unauthorized();
+                throw;
+            }
+
+            return NoContent();
+        }
     }
 }

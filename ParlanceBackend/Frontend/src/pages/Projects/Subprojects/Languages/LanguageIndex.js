@@ -56,7 +56,7 @@ class ProjectLanguageSelect extends React.Component {
                 if (lang.toLowerCase() === language.identifier.replace("-", "_").toLowerCase()) return false;
             }
             return true;
-        })} />)
+        })} history={this.props.history} />)
     }
 
     renderLanguages() {

@@ -1,3 +1,27 @@
 {
-  "PROJECT_SELECT_PROMPT": "Select a project"
+  "BUTTON_CANCEL": "Cancel",
+  "BUTTON_OK": "OK",
+  "ENTER_VERIFICATION_CODE_BUTTON": "Enter Verification Code",
+  "PROFILE_CHANGE_EMAIL_ADDRESS": "Change Email Address",
+  "PROFILE_CHANGE_PASSWORD": "Change Password",
+  "PROFILE_CHANGE_PROFILE_PICTURE": "Change Profile Picture",
+  "PROFILE_CHANGE_USERNAME": "Change Username",
+  "PROFILE_HEADER": "Profile",
+  "PROFILE_SECURITY": "Security",
+  "PROFILE_TWO_FACTOR_AUTHENTICATION": "Set up Two Factor Authentication",
+  "PROJECT_SELECT_PROMPT": "Select a project",
+  "RESEND_VERIFICATION_EMAIL_BUTTON": "Resend Verification Email",
+  "RESEND_VERIFICATION_EMAIL_ERROR": "Sorry, we couldn't resend the verification email.",
+  "RESEND_VERIFICATION_EMAIL_PROCESSING": "Resending Verification Email...",
+  "RESEND_VERIFICATION_EMAIL_SUCCESS": "Check your mailbox for the verification code. You may have to check your spam folder.",
+  "SELECT_LANGUAGE": "Select a language",
+  "VERIFY_EMAIL_ERROR": "Sorry, we couldn't verify your email. ",
+  "VERIFY_EMAIL_EXPLANATION": "Check your email for a code that we sent you. If you can't find it, try checking your spam folder, and if that doesn't work, try resending a verification email.",
+  "VERIFY_EMAIL_HEADER": "Verify your email",
+  "VERIFY_EMAIL_INVALID": "Your verification code is incorrect, or the verification code has expired.\n\nIf it's been more than a day since you received the verification email, you'll need to resend the verification email to get a new code.",
+  "VERIFY_EMAIL_PROCESSING": "Verifying your email...",
+  "VERIFY_EMAIL_PROMPT": "Enter the verification code",
+  "VERIFY_EMAIL_SUCCESS": "Your email has been verified. Thank you!",
+  "VERIFY_EMAIL_VERIFICATION_CODE": "Verification Code",
+  "VERIFY_EMAIL_VERIFY_BUTTON": "Verify"
 }

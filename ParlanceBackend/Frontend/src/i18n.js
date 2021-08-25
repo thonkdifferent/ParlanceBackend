@@ -8,5 +8,6 @@ i18n.use(initReactI18next)
         backend: {
             loadPath: "/translations/{{lng}}/{{ns}}.json"
         },
-        lng: "en"
+        lng: "en",
+        fallbackLng: "en"
     })

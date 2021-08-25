@@ -40,7 +40,7 @@ class UserIndicator extends React.Component {
     }
 
     render() {
-        return <div className={Styles.UserIndicator} onClick={userManager.openLoginModal.bind(userManager)}>
+        return <div className={Styles.UserIndicator} onClick={userManager.openLoginModal.bind(userManager, this.props.history)}>
             {this.renderContents()}
         </div>
     }

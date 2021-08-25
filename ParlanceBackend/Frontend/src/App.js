@@ -10,6 +10,7 @@ import './App.css';
 
 import ProjectManager from './utils/ProjectManager';
 import SiteAdministration from "./pages/SiteAdministration";
+import UserAdministration from "./pages/UserAdministration";
 
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -17,6 +18,7 @@ import Home from './pages/Home';
 import Projects from './pages/Projects';
 
 import Styles from "./App.module.css"
+import ProgressSpinner from "./components/ProgressSpinner";
 
 // This site has 3 pages, all of which are rendered
 // dynamically in the browser (not server rendered).
@@ -37,7 +39,7 @@ class App extends React.Component {
     }
 
     render() {
-        return <React.Suspense fallback={<div />}>
+        return <React.Suspense fallback={<ProgressSpinner style={{height: "100vh"}} message="Parlance" />}>
             <Router>
                 <div className={Styles.MainContainer}>
                     <Header projectManager={this.state.projectManager} />
@@ -47,6 +49,9 @@ class App extends React.Component {
                         </Route>
                         <Route path="/projects">
                             <Projects projectManager={this.state.projectManager} />
+                        </Route>
+                        <Route path="/account">
+                            <UserAdministration />
                         </Route>
                         <Route path="/admin">
                             <SiteAdministration projectManager={this.state.projectManager} />
