@@ -10,6 +10,7 @@ import {
 
 import LanguageIndex from "./LanguageIndex";
 import TranslationEditor from "../../../../translationEditor";
+import SubprojectSidebar from "../SubprojectSidebar";
 
 class Languages extends React.Component {
     constructor(props) {
@@ -19,6 +20,7 @@ class Languages extends React.Component {
     render() {
         return <Switch>
             <Route exact path={`${this.props.match.path}/`}>
+                <SubprojectSidebar projectManager={this.props.projectManager} />
                 <LanguageIndex projectManager={this.props.projectManager} />
             </Route>
             <Route path={`${this.props.match.path}/:language`}>

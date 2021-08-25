@@ -9,6 +9,7 @@ import {
 import tags from "language-tags";
 
 import languageManager from '../../../../utils/LanguageManager';
+import userManager from "../../../../utils/UserManager";
 
 import Index from "../../../../components/Index";
 import Modal from "../../../../components/Modal";
@@ -26,6 +27,16 @@ class ProjectLanguageSelect extends React.Component {
     }
 
     async componentDidMount() {
+        await this.updateParentSubproject();
+    }
+    
+    async componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps !== this.props) {
+            await this.updateParentSubproject();
+        }
+    }
+    
+    async updateParentSubproject() {
         try {
             this.setState({
                 parentSubproject: (await this.props.projectManager.getAllProjects()).find(project => project.name === this.props.match.params.project).subprojects.find(subproject => subproject.slug === this.props.match.params.subproject)
@@ -38,13 +49,7 @@ class ProjectLanguageSelect extends React.Component {
     }
 
     addLanguage() {
-        let buttonClick = button => {
-            if (button === "Cancel") {
-                Modal.unmount();
-            }
-        };
-
-        Modal.mount(<AddLanguageModal project={this.props.match.params.project} subproject={this.state.parentSubproject.slug} languages={Object.values(languageManager.languages)} />)
+        Modal.mount(<AddLanguageModal project={this.props.match.params.project} subproject={this.state.parentSubproject.slug} languages={Object.values(userManager.allowedLanguages())} />)
     }
 
     renderLanguages() {

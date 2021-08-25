@@ -1,0 +1,4 @@
+.Subprojects {
+    display: flex;
+    flex-grow: 1;
+}

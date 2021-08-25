@@ -6,11 +6,13 @@ import CryptoJS from "crypto-js";
 import Modal from "../components/Modal";
 import LoginModal from "../modals/LoginModal";
 import UserProfileModal from "../modals/UserProfileModal";
+import languageManager from "./LanguageManager";
 
 class UserManager extends EventEmitter {
     #username;
     #email;
     #isSuperuser;
+    #allowedLanguages;
 
     constructor() {
         super();
@@ -18,6 +20,7 @@ class UserManager extends EventEmitter {
         this.#username = "";
         this.#email = "";
         this.#isSuperuser = false;
+        this.#allowedLanguages = {};
 
         this.refreshUserData();
     }
@@ -54,6 +57,10 @@ class UserManager extends EventEmitter {
                 this.#username = userData.username;
                 this.#email = userData.email;
                 this.#isSuperuser = permissionData.superuser;
+                this.#allowedLanguages = permissionData.allowedLanguages.reduce((languages, language) => {
+                    languages[language.identifier.toLowerCase()] = language;
+                    return languages;
+                }, {});
             } catch {
                 //The token is invalid
                 await this.logout();
@@ -62,6 +69,7 @@ class UserManager extends EventEmitter {
             this.#username = "";
             this.#email = "";
             this.#isSuperuser = false;
+            this.#allowedLanguages = {};
         }
         this.emit("userChanged");
     }
@@ -76,6 +84,14 @@ class UserManager extends EventEmitter {
 
     isSuperuser() {
         return this.#isSuperuser;
+    }
+    
+    allowedLanguages() {
+        if (this.isSuperuser()) {
+            return languageManager.languages;
+        } else {
+            return this.#allowedLanguages;
+        }
     }
 
     profilePictureUrl() {

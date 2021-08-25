@@ -7,8 +7,12 @@ import {
     withRouter
 } from "react-router-dom";
 
+import Styles from "./index.module.css";
+
 import SubprojectIndex from "./SubprojectIndex";
 import Languages from "./Languages";
+import SubprojectSidebar from "./SubprojectSidebar";
+import ErrorPage from "../../../components/ErrorPage";
 
 class Subprojects extends React.Component {
     constructor(props) {
@@ -16,14 +20,18 @@ class Subprojects extends React.Component {
     }
 
     render() {
-        return <Switch>
-            <Route exact path={`${this.props.match.path}/`}>
-                <SubprojectIndex projectManager={this.props.projectManager} />
-            </Route>
-            <Route path={`${this.props.match.path}/:subproject`}>
-                <Languages projectManager={this.props.projectManager} />
-            </Route>
-        </Switch>
+        return <div className={Styles.Subprojects}>
+            <Switch>
+                <Route exact path={`${this.props.match.path}/`}>
+                    <SubprojectSidebar projectManager={this.props.projectManager} />
+                    {/*<SubprojectIndex projectManager={this.props.projectManager} />*/}
+                    <ErrorPage title="Select a language" message="Select a language to get started!" />
+                </Route>
+                <Route path={`${this.props.match.path}/:subproject`}>
+                    <Languages projectManager={this.props.projectManager} />
+                </Route>
+            </Switch>
+        </div>
     }
 }
 
