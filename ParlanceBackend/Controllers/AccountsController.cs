@@ -167,5 +167,77 @@ namespace ParlanceBackend.Controllers
 
             return NoContent();
         }
+        
+        [HttpPost("me/username")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> ChangeUsername(ChangeUsernameData data)
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+
+            try
+            {
+                if (!await userProxy.VerifyPasswordAsync(data.CurrentPassword)) return Unauthorized();
+                
+                await userProxy.SetUsernameAsync(data.NewUsername);
+            }
+            catch (DBusException e)
+            {
+                if (e.ErrorName == "com.vicr123.accounts.Error.DisabledAccount") return Unauthorized();
+                throw;
+            }
+
+            return NoContent();
+        }
+        
+        [HttpPost("me/password")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> ChangePassword(ChangePasswordData data)
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+
+            try
+            {
+                if (!await userProxy.VerifyPasswordAsync(data.CurrentPassword)) return Unauthorized();
+                
+                await userProxy.SetPasswordAsync(data.NewPassword);
+            }
+            catch (DBusException e)
+            {
+                if (e.ErrorName == "com.vicr123.accounts.Error.DisabledAccount") return Unauthorized();
+                throw;
+            }
+
+            return NoContent();
+        }
+        
+        [HttpPost("me/email")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> ChangeEmailAddress(ChangeEmailData data)
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+
+            try
+            {
+                if (!await userProxy.VerifyPasswordAsync(data.CurrentPassword)) return Unauthorized();
+                
+                await userProxy.SetEmailAsync(data.NewEmail);
+            }
+            catch (DBusException e)
+            {
+                if (e.ErrorName == "com.vicr123.accounts.Error.DisabledAccount") return Unauthorized();
+                throw;
+            }
+
+            return NoContent();
+        }
     }
 }

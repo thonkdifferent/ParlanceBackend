@@ -31,8 +31,16 @@ namespace ParlanceBackend.Authentication
         
         private async Task<bool> IsSuperuser(ulong userId)
         {
-            if (await _accounts.AccountsManager.UserIdByUsernameAsync(_parlanceConfiguration.Value.ForceSuperuserUsername) ==
-                userId) return true;
+            try
+            {
+                if (await _accounts.AccountsManager.UserIdByUsernameAsync(_parlanceConfiguration.Value.ForceSuperuserUsername) ==
+                    userId) return true;
+            }
+            catch (DBusException e)
+            {
+                if (e.ErrorName != "com.vicr123.accounts.Error.NoAccount") throw;
+            }
+            
             return await _context.Superusers.AnyAsync(user => user.UserId == userId);
         }
 

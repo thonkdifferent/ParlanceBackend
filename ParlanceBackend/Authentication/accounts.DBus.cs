@@ -102,6 +102,7 @@ namespace accounts.DBus
         Task SetEmailAsync(string Email);
         Task ResendVerificationEmailAsync();
         Task VerifyEmailAsync(string VerificationCode);
+        Task<bool> VerifyPasswordAsync(string Password);
         Task<IDisposable> WatchUsernameChangedAsync(Action<(string oldUsername, string newUsername)> handler, Action<Exception> onError = null);
         Task<IDisposable> WatchEmailChangedAsync(Action<string> handler, Action<Exception> onError = null);
         Task<IDisposable> WatchVerifiedChangedAsync(Action<bool> handler, Action<Exception> onError = null);

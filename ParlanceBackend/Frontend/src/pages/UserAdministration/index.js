@@ -15,6 +15,7 @@ import Styles from './UserAdministration.module.css';
 import ResendVerificationEmailModal from "./ResendVerificationEmailModal";
 import Modal from "../../components/Modal";
 import EnterVerificationCodeModal from "./EnterVerificationCodeModal";
+import ChangeUsernameModal from "./ChangeUsernameModal";
 
 class SiteAdministration extends React.Component {
     constructor(props) {
@@ -69,7 +70,7 @@ class SiteAdministration extends React.Component {
                 {this.renderEmailVerificationPrompt()}
                 <div>
                     <h2 className={Styles.SectionHeader}>{this.props.t("PROFILE_HEADER")}</h2>
-                    <div className={Styles.SectionItem}>{this.props.t("PROFILE_CHANGE_USERNAME")}</div>
+                    <div className={Styles.SectionItem} onClick={() => {Modal.mount(<ChangeUsernameModal />)}}>{this.props.t("PROFILE_CHANGE_USERNAME")}</div>
                     <div className={Styles.SectionItem}>{this.props.t("PROFILE_CHANGE_PROFILE_PICTURE")}</div>
                     <div className={Styles.SectionItem}>{this.props.t("PROFILE_CHANGE_EMAIL_ADDRESS")}</div>
                 </div>
