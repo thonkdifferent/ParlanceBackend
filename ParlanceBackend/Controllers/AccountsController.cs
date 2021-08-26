@@ -125,7 +125,7 @@ namespace ParlanceBackend.Controllers
 
             var data = new PermissionsData
             {
-                Superuser = await _context.Superusers.FindAsync(ulong.Parse(userId)) is not null,
+                Superuser = User.IsInRole(ProjectsAuthorizationHandler.SuperuserPermission),
                 AllowedLanguages = await _context.AllowedLanguages.Where(permission => permission.UserId == ulong.Parse(userId)).Select(permission => permission.Language).ToListAsync()
             };
             return data;

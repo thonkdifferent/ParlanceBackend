@@ -31,6 +31,8 @@ namespace ParlanceBackend.Authentication
         
         private async Task<bool> IsSuperuser(ulong userId)
         {
+            if (await _accounts.AccountsManager.UserIdByUsernameAsync(_parlanceConfiguration.Value.ForceSuperuserUsername) ==
+                userId) return true;
             return await _context.Superusers.AnyAsync(user => user.UserId == userId);
         }
 
@@ -65,6 +67,7 @@ namespace ParlanceBackend.Authentication
                 List<string> roles = new();
                 if (await IsSuperuser(id))
                 {
+                    roles.Add(ProjectsAuthorizationHandler.SuperuserPermission);
                     roles.Add(ProjectsAuthorizationHandler.CreateNewProjectPermission);
                     roles.Add(ProjectsAuthorizationHandler.ModifyPermissionsPermission);
                 }

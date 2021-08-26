@@ -45,10 +45,9 @@ namespace ParlanceBackend
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureLogging(logging =>
+                .ConfigureAppConfiguration(options =>
                 {
-                    logging.ClearProviders();
-                    logging.AddConsole();
+                    options.AddEnvironmentVariables("PARLANCE_");
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

@@ -90,7 +90,7 @@ namespace ParlanceBackend
                 });
             });
             services.Configure<ParlanceConfiguration>(Configuration.GetSection("Parlance"));
-            services.AddDbContext<ProjectContext>(options => options.UseSqlite(Utility.Parse(Configuration.GetConnectionString("ProjectContext"))).EnableSensitiveDataLogging());
+            services.AddDbContext<ProjectContext>(options => options.UseNpgsql(Utility.Parse(Configuration.GetConnectionString("ProjectContext"))).EnableSensitiveDataLogging());
             services.AddSingleton<GitService>();
             services.AddSingleton<TranslationFileService>();
             services.AddHostedService<GitPushService>();
