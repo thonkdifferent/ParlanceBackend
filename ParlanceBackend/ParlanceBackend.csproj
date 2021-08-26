@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>17dfc0e7-ca72-42d4-9548-12f162ff70b4</UserSecretsId>
+    <SpaRoot>Frontend\</SpaRoot>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,22 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Frontend\build\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Frontend\build\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Frontend\build\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Frontend\build\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <_ContentIncludedByDefault Remove="Frontend\build\asset-manifest.json" />
     <_ContentIncludedByDefault Remove="Frontend\build\manifest.json" />
     <_ContentIncludedByDefault Remove="Frontend\build\translations\en\translation.json" />
@@ -60,5 +45,21 @@
     <_ContentIncludedByDefault Remove="Frontend\public\translations\dev\translation.json" />
     <_ContentIncludedByDefault Remove="Frontend\public\translations\dev\translation_old.json" />
   </ItemGroup>
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)build\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 
 </Project>

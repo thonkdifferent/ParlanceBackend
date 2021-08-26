@@ -14,7 +14,7 @@ class PermissionAdministration extends React.Component {
         return <div className={AdministrationStyles.PageContainer}>
             <div className={AdministrationStyles.PageTitle}>Permissions</div>
             <div className={AdministrationStyles.PageDescription}>Grant and deny users permissions on Parlance.</div>
-            <div className={Styles.PermissionType} onClick={this.editLanguagePermissions.bind(this)}>
+            <div className={AdministrationStyles.ListItem} onClick={this.editLanguagePermissions.bind(this)}>
                 Edit Language Permissions
             </div>
         </div>

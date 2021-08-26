@@ -3,6 +3,7 @@
     flex-direction: column;
 
     max-width: 300px;
+    min-width: 300px;
     flex-basis: 300px;
     border-right: 1px solid var(--border-color);
 }

@@ -13,6 +13,7 @@ import userManager from '../../utils/UserManager';
 import AdministrationSidebar from './AdministrationSidebar';
 import ProjectAdministration from './ProjectAdministration';
 import PermissionAdministration from './PermissionAdministration';
+import SshAdministration from './SshAdministration';
 
 import Styles from './SiteAdministration.module.css';
 
@@ -53,6 +54,9 @@ class SiteAdministration extends React.Component {
                 </Route>
                 <Route path={`${this.props.match.path}/permissions`}>
                     <PermissionAdministration />
+                </Route>
+                <Route path={`${this.props.match.path}/ssh`}>
+                    <SshAdministration />
                 </Route>
             </Switch>
         </div>

@@ -1,0 +1,8 @@
+.SshKey {
+    display: block;
+    padding: 10px;
+    background-color: rgb(80, 80, 80);
+    border-radius: 10px;
+    margin-bottom: 9px;
+    word-wrap: anywhere;
+}

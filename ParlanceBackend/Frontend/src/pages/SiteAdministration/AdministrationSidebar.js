@@ -17,6 +17,7 @@ class AdministrationSidebar extends React.Component {
             <div className={Styles.SidebarHeader}>Parlance Administration</div>
             <NavLink to="/admin/projects" activeClassName={Styles.Selected} className={Styles.SidebarItem}>Projects</NavLink>
             <NavLink to="/admin/permissions" activeClassName={Styles.Selected} className={Styles.SidebarItem}>Permissions</NavLink>
+            <NavLink to="/admin/ssh" activeClassName={Styles.Selected} className={Styles.SidebarItem}>SSH</NavLink>
         </div>
     }
 }

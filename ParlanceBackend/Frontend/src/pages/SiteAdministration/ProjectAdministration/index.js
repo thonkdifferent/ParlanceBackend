@@ -15,7 +15,10 @@ class ProjectAdministration extends React.Component {
         }
 
         this.props.projectManager.on("projectsUpdated", this.updateProjects.bind(this));
-        this.updateProjects();
+    }
+    
+    async componentDidMount() {
+        await this.updateProjects();
     }
 
     async updateProjects() {
@@ -35,7 +38,7 @@ class ProjectAdministration extends React.Component {
             onClick: () => Modal.mount(<AddProjectModal projectManager={this.props.projectManager} />)
         });
 
-        return items.map(item => <div className={Styles.ProjectItem} onClick={item.onClick.bind(this)}>
+        return items.map(item => <div className={AdministrationStyles.ListItem} onClick={item.onClick.bind(this)}>
             {item.text}
         </div>)
     }

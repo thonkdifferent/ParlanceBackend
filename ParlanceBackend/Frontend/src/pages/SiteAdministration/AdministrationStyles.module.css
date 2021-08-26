@@ -1,13 +1,47 @@
 .PageTitle {
-    padding: 9px;
     font-size: 15pt;
+    padding-top: 9px;
+    padding-bottom: 9px;
 }
 
 .PageDescription {
-    padding-left: 9px;
     padding-bottom: 9px;
 }
 
 .PageContainer {
     flex-grow: 1;
+    padding-left: 20px;
+    padding-right: 20px;
+    overflow-x: hidden;
+}
+
+.ListItem {
+    border-top: 1px solid var(--border-color);
+    padding: 9px;
+    overflow: hidden;
+
+    cursor: pointer;
+}
+
+.ListItem:last-child {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ListItem:hover {
+    background-color: var(--hover-color);
+}
+
+.ListItem:active {
+    background-color: var(--active-color);
+}
+
+.SectionHeader {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12pt;
+}
+
+.SectionExplanation {
+    display: block;
+    margin-bottom: 9px;
 }

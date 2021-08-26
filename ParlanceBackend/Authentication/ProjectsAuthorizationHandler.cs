@@ -25,6 +25,7 @@ namespace ParlanceBackend.Authentication
         
         public const string CreateNewProjectPermission = "CreateNewProject";
         public const string ModifyPermissionsPermission = "ModifyPermissions";
+        public const string ModifySshKeysPermission = "ModifySshKeys";
         public const string SuperuserPermission = "Superuser";
 
         public ProjectsAuthorizationHandler(ProjectContext context, IOptions<ParlanceConfiguration> parlanceConfiguration, AccountsService accounts)

@@ -70,6 +70,7 @@ namespace ParlanceBackend.Authentication
                     roles.Add(ProjectsAuthorizationHandler.SuperuserPermission);
                     roles.Add(ProjectsAuthorizationHandler.CreateNewProjectPermission);
                     roles.Add(ProjectsAuthorizationHandler.ModifyPermissionsPermission);
+                    roles.Add(ProjectsAuthorizationHandler.ModifySshKeysPermission);
                 }
             
                 return AuthenticateResult.Success(new AuthenticationTicket(new GenericPrincipal(new ClaimsIdentity(claims, SchemeName), roles.ToArray()), SchemeName));
