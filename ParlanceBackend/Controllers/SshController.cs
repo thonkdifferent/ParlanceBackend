@@ -18,7 +18,7 @@ namespace ParlanceBackend.Controllers
     {
         string SshFile(string file)
         {
-            var sshFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssh-parlance");
+            var sshFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ssh");
             if (!Directory.Exists(sshFolder)) Directory.CreateDirectory(sshFolder);
             return Path.Join(sshFolder, file);
         }
