@@ -30,16 +30,9 @@ namespace ParlanceBackend.Controllers
         }
 
         [HttpPost("languages/{language}/{username}")]
-        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName, Roles = ProjectsAuthorizationHandler.ModifyPermissionsPermission)]
         public async Task<ActionResult> GrantLanguagePermission(string language, string username)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ("", ""), ProjectsAuthorizationHandler.ModifyPermissions);
-
-            if (!authorizationResult.Succeeded)
-            {
-                return Unauthorized();
-            }
-
             var languageObject = _context.Languages.SingleOrDefault(obj => obj.Identifier == language);
             if (languageObject is null) return NotFound();
 
@@ -56,16 +49,9 @@ namespace ParlanceBackend.Controllers
         }
 
         [HttpDelete("languages/{language}/{username}")]
-        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName, Roles = ProjectsAuthorizationHandler.ModifyPermissionsPermission)]
         public async Task<ActionResult> DenyLanguagePermission(string language, string username)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ("", ""), ProjectsAuthorizationHandler.ModifyPermissions);
-
-            if (!authorizationResult.Succeeded)
-            {
-                return Unauthorized();
-            }
-
             var userId = await _accounts.AccountsManager.UserIdByUsernameAsync(username);
 
             var allowedLanguage = _context.AllowedLanguages.SingleOrDefault(
@@ -79,16 +65,9 @@ namespace ParlanceBackend.Controllers
         }
         
         [HttpGet("languages")]
-        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName, Roles = ProjectsAuthorizationHandler.ModifyPermissionsPermission)]
         public async Task<ActionResult<AllowedLanguagesPublic>> GetAllLanguagePermissions()
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, ("", ""), ProjectsAuthorizationHandler.ModifyPermissions);
-
-            if (!authorizationResult.Succeeded)
-            {
-                return Unauthorized();
-            }
-
             await _context.Languages.ToListAsync();
             // return Ok(await _context.AllowedLanguages.Where(x => true).ToListAsync());
 

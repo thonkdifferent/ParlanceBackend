@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: center;
 
-    background-color: rgba(0, 100, 100, 0.3);
+    background-color: var(--footer-color);
     padding: 9px;
 }
 

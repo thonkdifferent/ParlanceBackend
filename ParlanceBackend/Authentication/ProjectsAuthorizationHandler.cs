@@ -20,16 +20,7 @@ namespace ParlanceBackend.Authentication
         };
         
         public const string CreateNewProjectPermission = "CreateNewProject";
-        public static OperationAuthorizationRequirement CreateNewProject = new()
-        {
-            Name = CreateNewProjectPermission
-        };
-        
         public const string ModifyPermissionsPermission = "ModifyPermissions";
-        public static OperationAuthorizationRequirement ModifyPermissions = new()
-        {
-            Name = ModifyPermissionsPermission
-        };
 
         public ProjectsAuthorizationHandler(ProjectContext context)
         {

@@ -17,14 +17,17 @@ namespace ParlanceBackend.Migrations
 
             modelBuilder.Entity("ParlanceBackend.Models.AllowedLanguages", b =>
                 {
-                    b.Property<ulong>("UserId")
+                    b.Property<ulong>("PermissionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("LanguageIdentifier")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("UserId");
+                    b.Property<ulong>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PermissionId");
 
                     b.HasIndex("LanguageIdentifier");
 

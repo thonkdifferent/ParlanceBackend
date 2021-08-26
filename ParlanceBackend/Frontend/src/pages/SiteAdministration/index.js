@@ -25,7 +25,10 @@ class SiteAdministration extends React.Component {
         }
 
         userManager.on('userChanged', this.updateAccessibility.bind(this))
-        this.updateAccessibility();
+    }
+    
+    async componentDidMount() {
+        await this.updateAccessibility();
     }
 
     async updateAccessibility() {

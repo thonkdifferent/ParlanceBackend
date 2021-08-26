@@ -25,7 +25,14 @@ class SiteAdministration extends React.Component {
         }
 
         userManager.on('userChanged', this.updateAccessibility.bind(this))
-        this.updateAccessibility();
+    }
+    
+    async componentDidMount() {
+        await this.updateAccessibility();
+    }
+
+    async componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps !== this.props) await this.updateAccessibility();
     }
 
     async updateAccessibility() {
@@ -48,9 +55,9 @@ class SiteAdministration extends React.Component {
     }
 
     render() {
-        // if (!this.state.accessible) {
-        //     return <ErrorPage message="To change user settings, you'll need to log in." title="Log In" />
-        // }
+        if (!this.state.accessible) {
+            return <ErrorPage message="To change user settings, you'll need to log in." title="Log In" />
+        }
 
         return <div className={Styles.SiteAdministration}>
             <div className={Styles.SiteAdministrationContents}>

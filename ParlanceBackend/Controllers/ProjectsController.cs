@@ -245,17 +245,9 @@ namespace ParlanceBackend.Controllers
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName, Roles = ProjectsAuthorizationHandler.CreateNewProjectPermission)]
         public async Task<ActionResult<Project>> PostProject(Project project)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, default, ProjectsAuthorizationHandler.CreateNewProject);
-
-            if (!authorizationResult.Succeeded)
-            {
-                return Unauthorized();
-            }
-            
-            
             project.SetConfiguration(_parlanceConfiguration);
             try {
                 ProjectPrivate projectPrivate = new()//populate with internal data
@@ -279,16 +271,9 @@ namespace ParlanceBackend.Controllers
 
         // DELETE: api/Projects/5
         [HttpDelete("{name}")]
-        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName, Roles = ProjectsAuthorizationHandler.CreateNewProjectPermission)]
         public async Task<IActionResult> DeleteProject(string name)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, default, ProjectsAuthorizationHandler.CreateNewProject);
-
-            if (!authorizationResult.Succeeded)
-            {
-                return Unauthorized();
-            }
-            
             var project = await _context.Projects.FindAsync(name);
             if (project == null)
             {

@@ -47,12 +47,8 @@ namespace ParlanceBackend.TranslationFiles {
             // {
             //     
             // })
-            var jsonFile = await JsonSerializer.DeserializeAsync<Dictionary<String, Translation>>(byteStream, new JsonSerializerOptions
-            {
-            });
-            var baseJsonFile = await JsonSerializer.DeserializeAsync<Dictionary<String, Translation>>(baseByteStream, new JsonSerializerOptions
-            {
-            });
+            var jsonFile = await JsonSerializer.DeserializeAsync<Dictionary<String, Translation>>(byteStream);
+            var baseJsonFile = await JsonSerializer.DeserializeAsync<Dictionary<String, Translation>>(baseByteStream);
             
             file.Messages = jsonFile!.Select(message =>
             {

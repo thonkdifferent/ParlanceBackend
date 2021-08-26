@@ -4,14 +4,14 @@
 
     max-width: 300px;
     flex-basis: 300px;
-    border-right: 1px solid rgb(80, 80, 80);
+    border-right: 1px solid var(--border-color);
 }
 
 .SidebarHeader {
     padding: 9px;
     font-size: 15pt;
 
-    border-bottom: 1px solid rgb(80, 80, 80);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .SidebarItem {
@@ -20,9 +20,9 @@
 }
 
 .SidebarItem:hover {
-    background-color: rgba(0, 100, 100, 0.5);
+    background-color: var(--hover-color);
 }
 
 .SidebarItem.Selected, .SidebarItem:active {
-    background-color: rgba(0, 100, 100);
+    background-color: var(--active-color);
 }

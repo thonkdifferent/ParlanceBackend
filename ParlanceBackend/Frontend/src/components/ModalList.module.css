@@ -1,5 +1,5 @@
 .ModalList {
-    border-bottom: 1px solid rgb(80, 80, 80);
+    border-bottom: 1px solid var(--border-color);
     max-height: 70vh;
     overflow-y: auto;
 }
@@ -11,13 +11,13 @@
 }
 
 .ModalListItem:hover {
-    background-color: rgba(0, 100, 100, 0.5);
+    background-color: var(--hover-color);
 }
 
 .ModalListItem:active {
-    background-color: rgba(0, 100, 100);
+    background-color: var(--active-color);
 }
 
 .ModalListItem:not(:last-child) {
-    border-bottom: 1px solid rgb(80, 80, 80);
+    border-bottom: 1px solid var(--border-color);
 }

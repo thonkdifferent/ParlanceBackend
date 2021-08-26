@@ -39,7 +39,7 @@
 }
 
 .Selected {
-    background-color: rgb(0, 100, 100);
+    background-color: var(--active-color);
     color: white;
 }
 

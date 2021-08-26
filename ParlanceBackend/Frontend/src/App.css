@@ -6,6 +6,20 @@ body {
     color: white;
 }
 
+:root {
+    /* Turquoise */
+    --hover-color: rgba(0, 100, 100, 0.5);
+    --active-color: rgb(0, 100, 100);
+    --border-color: rgb(80, 80, 80);
+    --footer-color: rgba(0, 100, 100, 0.3);
+    
+    /* Orange */
+    /*--hover-color: rgba(100, 60, 0, 0.5);*/
+    /*--active-color: rgb(100, 60, 0);*/
+    /*--border-color: rgb(80, 80, 80);*/
+    /*--footer-color: rgba(100, 60, 0, 0.3);*/
+}
+
 a {
     color: white;
     text-decoration: none;

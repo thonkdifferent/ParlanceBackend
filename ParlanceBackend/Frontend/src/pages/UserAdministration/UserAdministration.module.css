@@ -8,6 +8,7 @@
 .SiteAdministrationContents {
     min-width: 60vw;
     max-width: calc(100vw - 40px);
+    flex-basis: 600px;
 }
 
 .UserSplash {
@@ -60,7 +61,7 @@
 }
 
 .VerificationRequestButtonBox button {
-    border: 1px solid rgb(80, 80, 80);
+    border: 1px solid var(--border-color);
     background-color: transparent;
     color: white;
     font: 12pt Contemporary;
@@ -69,27 +70,27 @@
 }
 
 .VerificationRequestButtonBox button:hover {
-    background-color: rgba(0, 100, 100, 0.5);
+    background-color: var(--hover-color);
 }
 
 .VerificationRequestButtonBox button:active {
-    background-color: rgb(0, 100, 100);
+    background-color: var(--active-color);
 }
 
 .SectionItem {
     padding: 9px;
-    border-top: 1px solid rgb(80, 80, 80);
+    border-top: 1px solid var(--border-color);
     cursor: default;
 }
 
 .SectionItem:last-child {
-    border-bottom: 1px solid rgb(80, 80, 80);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .SectionItem:hover {
-    background-color: rgba(0, 100, 100, 0.5);
+    background-color: var(--hover-color);
 }
 
 .SectionItem:active {
-    background-color: rgb(0, 100, 100);
+    background-color: var(--active-color);
 }

@@ -57,10 +57,6 @@ namespace ParlanceBackend
             {
                 options.AddPolicy(ProjectsAuthorizationHandler.UpdateTranslationFilePermission,
                     policy => policy.Requirements.Add(ProjectsAuthorizationHandler.UpdateTranslationFile));
-                options.AddPolicy(ProjectsAuthorizationHandler.CreateNewProjectPermission,
-                    policy => policy.Requirements.Add(ProjectsAuthorizationHandler.CreateNewProject));
-                options.AddPolicy(ProjectsAuthorizationHandler.ModifyPermissionsPermission,
-                    policy => policy.Requirements.Add(ProjectsAuthorizationHandler.ModifyPermissions));
             });
             services.AddScoped<IAuthorizationHandler, ProjectsAuthorizationHandler>();
             

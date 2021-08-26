@@ -16,8 +16,8 @@
     grid-column-end: 3;
 
     border: none;
-    border-top: 1px solid rgb(80, 80, 80);
-    border-bottom: 1px solid rgb(80, 80, 80);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     background-color: rgb(40, 40, 40);
     color: white;
 
