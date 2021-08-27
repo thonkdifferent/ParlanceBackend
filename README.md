@@ -17,6 +17,7 @@ This version of Parlance is in Developer beta. It is not ready for production us
 ## Instalation
   Automated way(docker) :
   To be filled
+  
   Manual way:
   to be filled
   
