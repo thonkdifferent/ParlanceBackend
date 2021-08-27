@@ -12,7 +12,7 @@ Parlance is a new and simplified way of handling translations for your projects.
   - Easy integration into your current projects
 
 ## Warning
-This version of Parlance is in Developer beta. It is not ready for production use. P
+This version of Parlance is in Developer beta. It is not ready for production use.
 
 ## Instalation
   Automated way(docker) :
