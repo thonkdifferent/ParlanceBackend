@@ -14,3 +14,9 @@
     padding: 5px;
     border: 1px solid rgba(255, 255, 255, 0.5);
 }
+
+.ErrorText {
+    color: red;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
