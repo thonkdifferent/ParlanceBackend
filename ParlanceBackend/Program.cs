@@ -7,8 +7,11 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace ParlanceBackend
 {
@@ -24,22 +27,32 @@ namespace ParlanceBackend
         }
         private static void CreateDbIfNotExists(IHost host)
         {
-            using (var scope = host.Services.CreateScope())
+            using var scope = host.Services.CreateScope();
+            
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<ProjectContext>();
+
+            var migrationSuccess = false;
+            while (!migrationSuccess)
             {
-                var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<ProjectContext>();
-                    // context.Database.EnsureCreated();
-                    // DbInitializer.Initialize(context);
-                    
                     //Apply required migrations
                     context.Database.Migrate();
+                    migrationSuccess = true;
                 }
-                catch (Exception ex)
+                catch (NpgsqlException ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred creating the DB.");
+                    if (ex.InnerException is SocketException {SocketErrorCode: SocketError.ConnectionRefused})
+                    {
+                        logger.LogError(ex, "Can't connect to the database. Retrying in 5 seconds.");
+                        Thread.Sleep(5000);
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
         }
