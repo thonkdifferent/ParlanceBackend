@@ -124,6 +124,9 @@ class LoginModal extends React.Component {
                     case "twofactorRequired":
                         this.changeStage("twoFactor");
                         break;
+                    case "passwordResetRequestRequired":
+                        this.changeStage("passwordResetRequestRequired");
+                        break;
                     default:
                         this.setState({
                             error: "Sorry, we couldn't log you in."
@@ -211,6 +214,11 @@ class LoginModal extends React.Component {
             </Modal>,
             disabled: <Modal heading="Disabled Account" buttons={["OK"]} onButtonClick={this.buttonClick.bind(this)}>
                 Sorry, you can't be logged in as this account is disbled.
+            </Modal>,
+            passwordResetRequestRequired: <Modal heading="Password Reset Required" buttons={[
+                Modal.OkButton
+            ]}>
+                You need to reset your password.
             </Modal>,
             twoFactor: <Modal heading="Two Factor Authentication" buttons={["Cancel", "OK"]} onButtonClick={this.buttonClick.bind(this)}>
                 <div className={Styles.LoginContainer}>

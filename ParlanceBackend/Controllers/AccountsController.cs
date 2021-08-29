@@ -78,6 +78,9 @@ namespace ParlanceBackend.Controllers
                     case "com.vicr123.accounts.Error.PasswordResetRequired":
                         error = "passwordResetRequired";
                         break;
+                    case "com.vicr123.accounts.Error.PasswordResetRequestRequired":
+                        error = "passwordResetRequestRequired";
+                        break;
                     case "com.vicr123.accounts.Error.DisabledAccount":
                         error = "disabledAccount";
                         break;
