@@ -203,9 +203,16 @@ class LoginModal extends React.Component {
                 Sorry, you can't be logged in as this account is disbled.
             </Modal>,
             passwordResetRequestRequired: <Modal heading="Password Reset Required" buttons={[
-                Modal.OkButton
+                {
+                    text: "Back",
+                    onClick: () => this.changeStage("login")
+                },
+                {
+                    text: "Forgot Password Utility",
+                    onClick: () => this.changeStage("forgot")
+                }
             ]}>
-                You need to reset your password.
+                You need to reset your password. Use the Forgot Password utility and follow the instructions there.
             </Modal>,
             twoFactor: <Modal heading="Two Factor Authentication" buttons={[
                 {
