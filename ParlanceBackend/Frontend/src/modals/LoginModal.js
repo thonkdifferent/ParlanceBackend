@@ -6,6 +6,8 @@ import Fetch from '../utils/Fetch';
 import Modal from '../components/Modal';
 import userManager from '../utils/UserManager';
 import ProgressSpinner from "../components/ProgressSpinner";
+import ResetPasswordModal from "./ResetPasswordModal";
+import Form from "../components/Form";
 
 class LoginModal extends React.Component {
     constructor(props) {
@@ -22,72 +24,7 @@ class LoginModal extends React.Component {
             error: ""
         }
     }
-
-    buttonClick(button) {
-        let buttonActions;
-        switch (this.state.stage) {
-            case "login":
-                buttonActions = {
-                    "Log In": () => {
-                        this.setState({
-                            otpToken: "",
-                            newPassword: ""
-                        }, this.performLogin.bind(this))
-                    },
-                    "Register": () => {
-                        this.setState({
-                            email: "",
-                            passwordConfirm: ""
-                        }, () => this.changeStage("register"))
-                    },
-                    "Forgot": () => {
-
-                    },
-                    "Cancel": () => {
-                        Modal.unmount();
-                    }
-                }
-                break;
-            case "register":
-                buttonActions = {
-                    "Cancel": () => this.changeStage("login"),
-                    "Register": async () => {
-                        if (!this.state.username || !this.state.password || !this.state.email) {
-                            this.setState({
-                                error: "Please fill in all fields."
-                            });
-                            return;
-                        }
-
-                        if (this.state.password !== this.state.passwordConfirm) {
-                            this.setState({
-                                error: "Check that your passwords match."
-                            });
-                            return;
-                        }
-
-                        await this.performRegister();
-                    }
-                }
-                break;
-            case "disabled":
-                buttonActions = {
-                    "OK": () => {
-                        Modal.unmount();
-                    }
-                }
-                break;
-            case "twoFactor":
-                buttonActions = {
-                    "OK": this.performLogin.bind(this),
-                    "Cancel": () => this.changeStage("login")
-                }
-                break;
-        }
-
-        buttonActions[button]();
-    }
-
+    
     async performLogin() {
         //Attempt to log in with the current details
         this.changeStage("loginProcessing");
@@ -117,6 +54,7 @@ class LoginModal extends React.Component {
                         this.changeStage("login");
                         break;
                     case "passwordResetRequired":
+                        this.changeStage("reset");
                         break;
                     case "disabledAccount":
                         this.changeStage("disabled");
@@ -183,7 +121,31 @@ class LoginModal extends React.Component {
 
     render() {
         const stages = {
-            login: <Modal heading="Log In" buttons={["Cancel", "Register", "Forgot", "Log In"]} onButtonClick={this.buttonClick.bind(this)}>
+            login: <Modal heading="Log In" buttons={[
+                Modal.CancelButton,
+                {
+                    text: "Register",
+                    onClick: () => {
+                        this.setState({
+                            email: "",
+                            passwordConfirm: ""
+                        }, () => this.changeStage("register"))
+                    }
+                },
+                {
+                    text: "Forgot",
+                    onClick: () => this.changeStage("forgot")
+                },
+                {
+                    text: "Log In",
+                    onClick: () => {
+                        this.setState({
+                            otpToken: "",
+                            newPassword: ""
+                        }, this.performLogin.bind(this))
+                    }
+                }
+                ]}>
                 <div className={Styles.LoginContainer}>
                     Log in to your Victor Tran account to access Parlance.
                     <input className={Styles.LoginTextEntry} type="text" placeholder="Username" value={this.state.username} onChange={this.updateStateText.bind(this, "username")} />
@@ -191,7 +153,32 @@ class LoginModal extends React.Component {
                     {this.state.error && <span className={Styles.ErrorText}>{this.state.error}</span>}
                 </div>
             </Modal>,
-            register: <Modal heading="Register" buttons={["Cancel", "Register"]} onButtonClick={this.buttonClick.bind(this)}>
+            register: <Modal heading="Register" buttons={[
+                {
+                    text: "Cancel",
+                    onClick: () => this.changeStage("login")
+                },
+                {
+                    text: "Register",
+                    onClick: async () => {
+                        if (!this.state.username || !this.state.password || !this.state.email) {
+                            this.setState({
+                                error: "Please fill in all fields."
+                            });
+                            return;
+                        }
+
+                        if (this.state.password !== this.state.passwordConfirm) {
+                            this.setState({
+                                error: "Check that your passwords match."
+                            });
+                            return;
+                        }
+
+                        await this.performRegister();
+                    }
+                }
+                ]}>
                 <div className={Styles.LoginContainer}>
                     Register for a Victor Tran account to make edits to translations. 
                     <div className={Styles.LoginContainer}>
@@ -212,7 +199,7 @@ class LoginModal extends React.Component {
             registerProcessing: <Modal heading="Register" >
                 <ProgressSpinner message={"Creating account..."} />
             </Modal>,
-            disabled: <Modal heading="Disabled Account" buttons={["OK"]} onButtonClick={this.buttonClick.bind(this)}>
+            disabled: <Modal heading="Disabled Account" buttons={[Modal.OkButton]}>
                 Sorry, you can't be logged in as this account is disbled.
             </Modal>,
             passwordResetRequestRequired: <Modal heading="Password Reset Required" buttons={[
@@ -220,13 +207,51 @@ class LoginModal extends React.Component {
             ]}>
                 You need to reset your password.
             </Modal>,
-            twoFactor: <Modal heading="Two Factor Authentication" buttons={["Cancel", "OK"]} onButtonClick={this.buttonClick.bind(this)}>
+            twoFactor: <Modal heading="Two Factor Authentication" buttons={[
+                {
+                    text: "Cancel",
+                    onClick: () => this.changeStage("login")
+                },
+                {
+                    text: "OK",
+                    onClick: this.performLogin.bind(this),
+                }
+                ]}>
                 <div className={Styles.LoginContainer}>
                     Enter your Two Factor Authentication code
                     <span className={Styles.HelpText}>You can also use a 12 digit backup code</span>
                     <input className={Styles.LoginTextEntry}  type="text" placeholder="Two Factor Authentication code" value={this.state.otpToken} onChange={this.updateStateText.bind(this, "otpToken")} />
                 </div>
-            </Modal>
+            </Modal>,
+            reset: <Modal heading="Reset Password" buttons={[
+                {
+                    text: "Cancel",
+                    onClick: () => this.changeStage("login")
+                },
+                {
+                    text: "OK",
+                    onClick: () => {
+                        if (this.state.newPassword !== this.state.passwordConfirm) {
+                            return;
+                        }
+                        
+                        this.performLogin();
+                    }
+                }
+            ]}>
+                <div className={Styles.LoginContainer}>
+                    You need to set a new password for your account.
+                    <span className={Styles.HelpText}>Make it a good password and save it for this account. You don't want to be reusing this password.</span>
+                    <Form>
+                        <label>New Password</label>
+                        <input type="password" value={this.state.newPassword} onChange={this.updateStateText.bind(this, "newPassword")} />
+                        
+                        <label>Confirm New Password</label>
+                        <input type="password" value={this.state.passwordConfirm} onChange={this.updateStateText.bind(this, "passwordConfirm")} />
+                    </Form>
+                </div>
+            </Modal>,
+            forgot: <ResetPasswordModal onDone={this.changeStage.bind(this, "login")} />
         }
 
         return stages[this.state.stage];

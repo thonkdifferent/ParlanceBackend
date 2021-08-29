@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using accounts.DBus;
 using Microsoft.AspNetCore.Authorization;
@@ -99,6 +100,74 @@ namespace ParlanceBackend.Controllers
                 }
                 var tokenData = new TokenData {Error = error};
                 return Unauthorized(tokenData);
+            }
+        }
+
+        [HttpPost("resetMethods")]
+        public async Task<ActionResult<ResetMethod[]>> GetResetMethods(ResetMethodsData data)
+        {
+            try
+            {
+                var userId = await _accounts.AccountsManager.UserIdByUsernameAsync(data.Username);
+                var userPath = await _accounts.AccountsManager.UserByIdAsync(userId);
+                var resetProxy = _accounts.Bus.CreateProxy<IPasswordReset>("com.vicr123.accounts", userPath);
+
+                var methods = await resetProxy.ResetMethodsAsync();
+                return Ok(methods.Select(method => new ResetMethod()
+                {
+                    Type = method.Item1,
+                    Data = method.Item2
+                }));
+            }
+            catch (DBusException e)
+            {
+                switch (e.ErrorName)
+                {
+                    case "com.vicr123.accounts.Error.NoAccount":
+                        return NotFound();
+                    default:
+                        throw;
+                }
+            }
+        }
+
+        [HttpPost("reset")]
+        public async Task<ActionResult> PerformReset(ResetData data)
+        {
+            try
+            {
+                var userId = await _accounts.AccountsManager.UserIdByUsernameAsync(data.Username);
+                var userPath = await _accounts.AccountsManager.UserByIdAsync(userId);
+                var resetProxy = _accounts.Bus.CreateProxy<IPasswordReset>("com.vicr123.accounts", userPath);
+
+                await resetProxy.ResetPasswordAsync(data.ResetType, data.ResetProperties.ToDictionary(item => item.Key,
+                    item =>
+                    {
+                        if (item.Value is JsonElement el)
+                        {
+                            return el.ValueKind switch
+                            {
+                                JsonValueKind.String => el.GetString(),
+                                JsonValueKind.Number => el.GetInt64(),
+                                _ => null
+                            };
+                        }
+                        else
+                        {
+                            return item.Value;
+                        }
+                    }));
+                return NoContent();
+            }
+            catch (DBusException e)
+            {
+                switch (e.ErrorName)
+                {
+                    case "com.vicr123.accounts.Error.NoAccount":
+                        return NotFound();
+                    default:
+                        throw;
+                }
             }
         }
         
