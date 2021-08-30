@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ParlanceBackend.Misc;
 using System.IO;
+using System.Linq;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 
@@ -45,14 +47,24 @@ namespace ParlanceBackend.Models
 
         public ProjectSpecification.Root SpecFile()
         {
-            string repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(Name), configuration.Value.GitRepository);
-            string jsonFile = $"{repoLocation}/.parlance.json";
+            var repoLocation = Utility.GetDirectoryFromSlug(Utility.Slugify(Name), configuration.Value.GitRepository);
+            var jsonFile = $"{repoLocation}/.parlance.json";
             if (!File.Exists(jsonFile)) return null;
 
-            return JsonSerializer.Deserialize<ProjectSpecification.Root>(File.ReadAllText(jsonFile), new JsonSerializerOptions
+            var rootObj = JsonSerializer.Deserialize<ProjectSpecification.Root>(File.ReadAllText(jsonFile), new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             });
+
+            var subprojects = rootObj.Subprojects.Select(subproject =>
+            {
+                subproject.parentProjName = Name;
+                return subproject;
+            }).ToList();
+            
+            rootObj.Subprojects = subprojects;
+            
+            return rootObj;
         }
 
         public ProjectSpecification.Subproject[] Subprojects {

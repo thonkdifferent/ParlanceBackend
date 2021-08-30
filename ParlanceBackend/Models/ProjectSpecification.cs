@@ -51,15 +51,8 @@ namespace ParlanceBackend.Models
         public class Root
         {
             public string Name { get; set; }
-
-            private List<Subproject> subprojects;
             
-            public List<Subproject> Subprojects { get => subprojects; set {
-                foreach (Subproject subproj in value) {
-                    subproj.parentProjName = Name;
-                }
-                subprojects = value;
-            } }
+            public List<Subproject> Subprojects { get; set; }
         }
     }
 }
