@@ -5,7 +5,7 @@ namespace ParlanceBackend.Models
     public class AllowedLanguages
     {
         [Key]
-        public ulong PermissionId { get; set; }
+        public long PermissionId { get; set; }
         
         public ulong UserId { get; set; }
         public Language Language { get; set; }
