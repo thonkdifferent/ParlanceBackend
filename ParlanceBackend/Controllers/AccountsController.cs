@@ -7,7 +7,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using accounts.DBus;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -113,7 +112,7 @@ namespace ParlanceBackend.Controllers
                 var resetProxy = _accounts.Bus.CreateProxy<IPasswordReset>("com.vicr123.accounts", userPath);
 
                 var methods = await resetProxy.ResetMethodsAsync();
-                return Ok(methods.Select(method => new ResetMethod()
+                return Ok(methods.Select(method => new ResetMethod
                 {
                     Type = method.Item1,
                     Data = method.Item2
@@ -152,10 +151,8 @@ namespace ParlanceBackend.Controllers
                                 _ => null
                             };
                         }
-                        else
-                        {
-                            return item.Value;
-                        }
+
+                        return item.Value;
                     }));
                 return NoContent();
             }
@@ -310,6 +307,130 @@ namespace ParlanceBackend.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPost("me/otp")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult<Dictionary<string, object>>> GetTwoFactorAuthenticationStatus(GetTwoFactorAuthenticationData data)
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+            var otpProxy = _accounts.Bus.CreateProxy<ITwoFactor>("com.vicr123.accounts", userObjectPath);
+
+            try
+            {
+                if (!await userProxy.VerifyPasswordAsync(data.CurrentPassword)) return Unauthorized();
+                
+                if (await otpProxy.GetTwoFactorEnabledAsync())
+                {
+                    var backupCodes = await otpProxy.GetBackupKeysAsync();
+                    return Ok(new Dictionary<string, object>
+                    {
+                        {"enabled", true},
+                        {"backupCodes", backupCodes.Select(code => new Dictionary<string, object>
+                        {
+                            {"code", code.Item1},
+                            {"used", code.Item2}
+                        })}
+                    });
+                }
+
+                var key = await otpProxy.GenerateTwoFactorKeyAsync();
+                return Ok(new Dictionary<string, object>
+                {
+                    {"enabled", false},
+                    {"key", key}
+                });
+            }
+            catch (DBusException e)
+            {
+                switch (e.ErrorName)
+                {
+                    case "com.vicr123.accounts.Error.DisabledAccount":
+                        return Unauthorized();
+                    case "com.vicr123.accounts.Error.TwoFactorRequired":
+                        return Unauthorized();
+                    default:
+                        throw;
+                }
+            }
+        }
+
+        [HttpPost("me/otp/enable")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> EnableTwoFactorAuthentication(EnableTwoFactorAuthenticationData data)
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+            var otpProxy = _accounts.Bus.CreateProxy<ITwoFactor>("com.vicr123.accounts", userObjectPath);
+
+            try
+            {
+                if (!await userProxy.VerifyPasswordAsync(data.CurrentPassword)) return Unauthorized();
+                
+                await otpProxy.EnableTwoFactorAuthenticationAsync(data.OtpCode);
+                return NoContent();
+            }
+            catch (DBusException e)
+            {
+                if (e.ErrorName == "com.vicr123.accounts.Error.DisabledAccount") return Unauthorized();
+                throw;
+            }
+        }
+        
+
+        [HttpPost("me/otp/disable")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> DisableTwoFactorAuthentication(GetTwoFactorAuthenticationData data)
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+            var otpProxy = _accounts.Bus.CreateProxy<ITwoFactor>("com.vicr123.accounts", userObjectPath);
+
+            try
+            {
+                if (!await userProxy.VerifyPasswordAsync(data.CurrentPassword)) return Unauthorized();
+                
+                await otpProxy.DisableTwoFactorAuthenticationAsync();
+                return NoContent();
+            }
+            catch (DBusException e)
+            {
+                if (e.ErrorName == "com.vicr123.accounts.Error.DisabledAccount") return Unauthorized();
+                throw;
+            }
+        }
+        
+        
+
+        [HttpPost("me/otp/regenerate")]
+        [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
+        public async Task<ActionResult> RegenerateBackupKeys(EnableTwoFactorAuthenticationData data)
+        {
+            var userId = User.Claims.Single(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            
+            var userObjectPath = await _accounts.AccountsManager.UserByIdAsync(ulong.Parse(userId));
+            var userProxy = _accounts.Bus.CreateProxy<IUser>("com.vicr123.accounts", userObjectPath);
+            var otpProxy = _accounts.Bus.CreateProxy<ITwoFactor>("com.vicr123.accounts", userObjectPath);
+
+            try
+            {
+                if (!await userProxy.VerifyPasswordAsync(data.CurrentPassword)) return Unauthorized();
+                
+                await otpProxy.RegenerateBackupKeysAsync();
+                return NoContent();
+            }
+            catch (DBusException e)
+            {
+                if (e.ErrorName == "com.vicr123.accounts.Error.DisabledAccount") return Unauthorized();
+                throw;
+            }
         }
     }
 }

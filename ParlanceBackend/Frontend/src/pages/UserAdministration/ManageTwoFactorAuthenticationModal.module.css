@@ -1,0 +1,64 @@
+.BackupCodeContainer {
+    display: grid;
+    grid-template-columns: min-content min-content;
+    
+    align-items: center;
+    justify-content: space-around;
+    gap: 9px;
+    padding: 9px;
+}
+
+.BackupCode {
+    font-size: 15pt;
+}
+
+.UsedBackupCode {
+    opacity: 0.5;
+    text-decoration-line: line-through;
+}
+
+.BackupCodeChunk:not(:first-child):not(:last-child) {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.SetupContainer {
+    display: grid;
+    grid-template-columns: min-content 100fr;
+    
+    gap: 9px;
+    padding-top: 9px;
+}
+
+.SetupStep {
+    display: flex;
+    flex-direction: column;
+}
+
+.SetupStepNumber {
+    font-size: 20pt;
+}
+
+.SetupCode {
+    font-size: 15pt;
+}
+
+.SetupCodeChunk:first-child {
+    padding-right: 3px;
+}
+
+.SetupCodeChunk:last-child {
+    padding-left: 3px;
+}
+
+.SetupCodeChunk:not(:first-child):not(:last-child) {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.SetupQrCode {
+    align-self: center;
+    padding: 10px;
+    background-color: white;
+    margin: 9px;
+}
