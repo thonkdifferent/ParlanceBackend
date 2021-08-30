@@ -25,7 +25,7 @@ class ProjectIndex extends React.Component {
     }
 
     renderProjects() {
-        return this.state.projects.map(project => <Link to={`${this.props.match.url}/${project.name}`}>{project.name}</Link>)
+        return this.state.projects.map(project => <div onClick={() => this.props.history.push(`${this.props.match.url}/${project.name}`)}>{project.name}</div>)
     }
 
     render() {

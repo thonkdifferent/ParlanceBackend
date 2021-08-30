@@ -13,9 +13,26 @@
 .IndexItem {
     padding: 9px;
     display: flex;
-    cursor: default;
+    
+    border-top: 1px solid var(--border-color);
+    overflow: hidden;
+
+    cursor: pointer;
+}
+
+.IndexItem:last-child {
+    border-bottom: 1px solid var(--border-color);
 }
 
 .IndexItem:hover {
-    background-color: rgb(60, 60, 60);
+    background-color: var(--hover-color);
+}
+
+.IndexItem:active {
+    background-color: var(--active-color);
+}
+
+.IndexContainer {
+    padding-left: 20px;
+    padding-right: 20px;
 }

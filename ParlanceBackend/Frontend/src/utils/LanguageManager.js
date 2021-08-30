@@ -21,12 +21,22 @@ class LanguageManager {
     }
     
     getLanguage(lang) {
-        for (let transformed of [
+        let transformations = [
             lang.toLowerCase(),
             lang.toLowerCase().replace("_", "-")
-        ]) {
+        ];
+        
+        for (let transformed of transformations) {
             if (this.languages[transformed]) return this.languages[transformed];
         }
+        
+        //Now match by language code only
+        for (let knownLanguage of Object.keys(this.languages)) {
+            for (let transformed of transformations) {
+                if (knownLanguage.startsWith(transformed)) return this.languages[knownLanguage];
+            }
+        }
+        
         return null;
     }
 }

@@ -61,7 +61,7 @@ class ProjectLanguageSelect extends React.Component {
 
     renderLanguages() {
         return [
-            ...(this.state.parentSubproject?.languages.filter(lang => lang.identifier !== this.state.parentSubproject.baseLang).map(lang => <Link to={`${this.props.match.url}/${lang.identifier}`}>{languageManager.getLanguage(lang.identifier)?.name}</Link>) || []),
+            ...(this.state.parentSubproject?.languages.filter(lang => lang.identifier !== this.state.parentSubproject.baseLang).map(lang => <div onClick={() => this.props.history.push(`${this.props.match.url}/${lang.identifier}`)}>{languageManager.getLanguage(lang.identifier)?.name || `Unidentified Language (${lang.identifier})`}</div>) || []),
             <div onClick={this.addLanguage.bind(this)}>Add a language</div>
         ]
     }

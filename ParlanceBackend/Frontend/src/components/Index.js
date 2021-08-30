@@ -9,7 +9,9 @@ class Index extends React.Component {
     render() {
         return <div className={Styles.Index}>
             <h1 className={Styles.Header}>{this.props.title}</h1>
-            {this.props.children?.map(el => <div className={Styles.IndexItem}>{el}</div>)}
+            <div className={Styles.IndexContainer}>
+                {this.props.children?.map(el => <div className={Styles.IndexItem} onClick={el.props.onClick}>{el}</div>)}
+            </div>
         </div>
     }
 }
