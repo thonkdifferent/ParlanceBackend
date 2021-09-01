@@ -53,6 +53,7 @@ class EditHostKeyModal extends React.Component {
                 Modal.CancelButton,
                 {
                     text: "Delete Host Key",
+                    type: "destructive",
                     onClick: this.changeStage.bind(this, "confirmDelete")
                 }
             ]}>
@@ -65,6 +66,7 @@ class EditHostKeyModal extends React.Component {
                 },
                 {
                     text: "Delete",
+                    type: "destructive",
                     onClick: this.deleteKey.bind(this)
                 }
             ]}>

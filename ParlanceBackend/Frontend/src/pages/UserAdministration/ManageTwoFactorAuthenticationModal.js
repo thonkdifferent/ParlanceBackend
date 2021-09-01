@@ -172,6 +172,7 @@ class ManageTwoFactorAuthenticationModal extends React.Component {
                         },
                         {
                             text: this.props.t("PROFILE_MANAGE_TWO_FACTOR_AUTHENTICATION_DISABLE"),
+                            type: "destructive",
                             onClick: () => this.changeStage("confirmDisable")
                         }
                     ]}
@@ -184,6 +185,7 @@ class ManageTwoFactorAuthenticationModal extends React.Component {
                 },
                 {
                     text: this.props.t("PROFILE_MANAGE_TWO_FACTOR_AUTHENTICATION_DISABLE_BUTTON"),
+                    type: "destructive",
                     onClick: this.performDisable.bind(this)
                 }
             ]}>

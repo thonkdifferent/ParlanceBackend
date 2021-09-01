@@ -48,6 +48,7 @@ class EditProjectModal extends React.Component {
                 Modal.CancelButton,
                 {
                     text: "Delete",
+                    type: "destructive",
                     onClick: () => this.changeStage("delete")
                 }
             ]}>
@@ -68,6 +69,7 @@ class EditProjectModal extends React.Component {
                 },
                 {
                     text: "Delete",
+                    type: "destructive",
                     onClick: () => this.deleteProject()
                 }
             ]}>

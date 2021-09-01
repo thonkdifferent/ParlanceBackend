@@ -59,6 +59,18 @@
     border-right: 1px solid var(--border-color);
 }
 
+.DestructiveButton {
+    background-color: rgba(255, 0, 0, 0.3);
+}
+
+.DestructiveButton:hover {
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+.DestructiveButton:active {
+    background-color: rgba(255, 0, 0, 0.7);
+}
+
 @media (max-width: 600px) {
     .ModalContainer {
         align-self: flex-end;

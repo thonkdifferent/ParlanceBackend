@@ -48,6 +48,7 @@ class DeleteSshKeyModal extends React.Component {
                 Modal.CancelButton,
                 {
                     text: "Delete",
+                    type: "destructive",
                     onClick: this.deleteKey.bind(this)
                 }
             ]}>

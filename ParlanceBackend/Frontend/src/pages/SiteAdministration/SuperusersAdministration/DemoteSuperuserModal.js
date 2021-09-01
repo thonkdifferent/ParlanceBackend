@@ -50,6 +50,7 @@ class DemoteSuperuserModal extends React.Component {
                 Modal.CancelButton,
                 {
                     text: "Demote",
+                    type: "destructive",
                     onClick: this.demoteUser.bind(this)
                 }
             ]}>

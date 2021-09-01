@@ -141,6 +141,7 @@ class EditLanguagePermissionsModal extends React.Component {
                 },
                 {
                     text: "Revoke",
+                    type: "destructive",
                     onClick: this.performRevokePermissions.bind(this)
                 }
             ]}>

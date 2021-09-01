@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Karambolo.Common;
 using Microsoft.Extensions.Options;
@@ -11,13 +12,15 @@ namespace ParlanceBackend.Services
 {
     public class TranslationFileService
     {
-
+        private readonly object _updateLock;
+        
         private readonly IOptions<ParlanceConfiguration> _parlanceConfiguration;
         private readonly GitService _git;
         public TranslationFileService(IOptions<ParlanceConfiguration> parlanceConfiguration, GitService git)
         {
             _parlanceConfiguration = parlanceConfiguration;
             _git = git;
+            _updateLock = new object();
         }
 
         /// <summary>
@@ -66,17 +69,21 @@ namespace ParlanceBackend.Services
         /// <param name="language">Language to modify</param>
         public void UpdateTranslationFile(TranslationDelta delta, ProjectPrivate project, string subproject, string language)
         {
-            //get the subproject
-            var subprojectObj = FindSubproject(project, subproject);
-            if(subprojectObj == null)
+            //Lock the mutex so we don't try to update files concurrently
+            lock (_updateLock)
             {
-                throw new FileNotFoundException("Unable to find subproject");
-            }
-            //get the filename
-            var translationFileName = TranslationFileFilename(subprojectObj, language);
-            var baseTranslationFileName = TranslationFileFilename(subprojectObj, subprojectObj.BaseLang);
+                //get the subproject
+                var subprojectObj = FindSubproject(project, subproject);
+                if(subprojectObj == null)
+                {
+                    throw new FileNotFoundException("Unable to find subproject");
+                }
+                //get the filename
+                var translationFileName = TranslationFileFilename(subprojectObj, language);
+                var baseTranslationFileName = TranslationFileFilename(subprojectObj, subprojectObj.BaseLang);
 
-            ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).Update(translationFileName, baseTranslationFileName, delta);
+                ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).Update(translationFileName, baseTranslationFileName, delta);
+            }
         }
 
         /// <summary>
