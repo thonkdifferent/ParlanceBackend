@@ -191,7 +191,7 @@ namespace ParlanceBackend.Controllers
         
         [HttpPost("{name}/{subprojectSlug}/{language}/create")]
         [Authorize(AuthenticationSchemes = DBusAuthenticationHandler.SchemeName)]
-        public async Task<ActionResult> CreateNewTranslationLanguage(string name, string subprojectSlug, string language)
+        public async Task<ActionResult<CreateResponse>> CreateNewTranslationLanguage(string name, string subprojectSlug, string language)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, (name, language), ProjectsAuthorizationHandler.UpdateTranslationFile);
 
@@ -202,7 +202,13 @@ namespace ParlanceBackend.Controllers
 
             var projectInternal = await _context.Projects.FindAsync(name);
             await _translationFile.CreateTranslationFile(projectInternal, subprojectSlug, language);
-            return NoContent();
+
+            var response = new CreateResponse()
+            {
+                LanguageName = _translationFile.TransformLanguageName(projectInternal, subprojectSlug, language)
+            };
+            
+            return Ok(response);
         }
 
         #region Put method that has been comented since forever but we're not doing anything with it but it must stay because we may do something with it

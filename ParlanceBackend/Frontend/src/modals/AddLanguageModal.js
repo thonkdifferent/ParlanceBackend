@@ -12,7 +12,7 @@ class AddLanguageModal extends React.Component {
         super(props);
 
         this.state = {
-            stage: userManager.loggedIn() ? (this.props.languages.length == 0 ? "empty" : "add") : "login"
+            stage: userManager.loggedIn() ? (this.props.languages.length === 0 ? "empty" : "add") : "login"
         }
     }
 
@@ -32,9 +32,9 @@ class AddLanguageModal extends React.Component {
         this.changeStage("adding");
 
         try {
-            let projectDetails = await Fetch.post(`/projects/${this.props.project}/${this.props.subproject}/${language}/create`, {});
+            let createdDetails = await Fetch.post(`/projects/${this.props.project}/${this.props.subproject}/${language}/create`, {});
             Modal.unmount();
-            this.props.history.push(`${this.props.subproject}/${language}`);
+            this.props.history.push(`${this.props.subproject}/${createdDetails.languageName}`);
         } catch {
             this.changeStage("error");
         }
@@ -60,7 +60,7 @@ class AddLanguageModal extends React.Component {
                 {this.props.languages.map(language => ({
                     text: language.name,
                     onClick: async () => {
-                        this.addLanguage(language.identifier)
+                        await this.addLanguage(language.identifier)
                     }
                 }))}
                 </ModalList>

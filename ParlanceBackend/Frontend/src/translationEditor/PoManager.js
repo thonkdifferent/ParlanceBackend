@@ -20,6 +20,8 @@ class PoManager extends EventEmitter {
 
             this.updateChecks();
         } catch (error) {
+            console.log(error);
+            console.log(fileContents);
             this.hasError = error;
         }
     }

@@ -140,5 +140,17 @@ namespace ParlanceBackend.Services
 
             return ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).NormaliseLanguageName(language);
         }
+        
+        public string TransformLanguageName(ProjectPrivate project, string subproject, string language)
+        {
+            
+            var subprojectObj = FindSubproject(project, subproject);
+            if (subprojectObj == null)
+            {
+                throw new FileNotFoundException("Unable to find subproject");
+            }
+
+            return ITranslationFileFormat.LoaderForFormat(subprojectObj.Type).TransformLanguageName(language);
+        }
     }
 }
