@@ -11,6 +11,7 @@ import Fetch from "../utils/Fetch";
 
 import Styles from "./TranslationArea.module.css";
 import TranslationTextEntry from "./TranslationTextEntry";
+import ErrorPage from "../components/ErrorPage";
 
 class TranslationArea extends React.Component {
     constructor(props) {
@@ -44,7 +45,7 @@ class TranslationArea extends React.Component {
                 {this.renderTextEntries(translation)}
             </>
         } else {
-            return "Select a translation";
+            return <ErrorPage title={"Get Started"} message={"Select a string to begin"} />;
         }
     }
 

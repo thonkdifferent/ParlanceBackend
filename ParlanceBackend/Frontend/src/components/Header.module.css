@@ -3,13 +3,15 @@
 
     /*padding: 9px;*/
     /*background-color: var(--active-color);*/
-    background-color: rgb(200, 200, 200);
-    color: black;
+    background-color: rgb(40, 40, 40);
+    color: white;
     align-items: center;
+    
+    border-bottom: 1px solid var(--border-color);
 }
 
 .Header a {
-    color: black;
+    color: white;
 }
 
 .Icon {
@@ -24,7 +26,7 @@
     display: flex;
     flex-direction: row-reverse;
     
-    --snackbar-color: rgb(200, 200, 200);
+    --snackbar-color: rgb(40, 40, 40);
     background-color: var(--snackbar-color);
     
     margin-left: -54px;
@@ -33,11 +35,11 @@
 }
 
 .SnackbarPart:hover {
-    --snackbar-color: rgb(255, 255, 255);
+    --snackbar-color: var(--hover-color);
 }
 
 .SnackbarPart:active {
-    --snackbar-color: rgb(150, 150, 150);
+    --snackbar-color: var(--active-color);
 }
 
 .SnackbarPart:last-child .SnackbarPointer, .SnackbarPart:last-child .SnackbarInnerPointer {
@@ -59,7 +61,7 @@
     border-top: 27px solid transparent;
     border-right: 27px solid transparent;
     border-bottom: 27px solid transparent;
-    border-left: 27px solid black;
+    border-left: 27px solid var(--border-color);
 
     pointer-events: none;
     margin-left: -53px;
