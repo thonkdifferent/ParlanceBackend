@@ -1,12 +1,93 @@
 .Header {
     display: flex;
 
-    padding: 9px;
-    background-color: var(--active-color);
-    color: white;
+    /*padding: 9px;*/
+    /*background-color: var(--active-color);*/
+    background-color: rgb(200, 200, 200);
+    color: black;
     align-items: center;
+}
+
+.Header a {
+    color: black;
 }
 
 .Icon {
 
+}
+
+.SnackbarContainer {
+    display: flex;
+}
+
+.SnackbarPart {
+    display: flex;
+    flex-direction: row-reverse;
+    
+    --snackbar-color: rgb(200, 200, 200);
+    background-color: var(--snackbar-color);
+    
+    margin-left: -54px;
+    padding-left: 27px;
+    /*margin-right: -44px;*/
+}
+
+.SnackbarPart:hover {
+    --snackbar-color: rgb(255, 255, 255);
+}
+
+.SnackbarPart:active {
+    --snackbar-color: rgb(150, 150, 150);
+}
+
+.SnackbarPart:last-child .SnackbarPointer, .SnackbarPart:last-child .SnackbarInnerPointer {
+    display: none;
+}
+
+.SnackbarPart:first-child {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.SnackbarPointer {
+    content: " ";
+    /*display: block;*/
+
+    width: 0;
+    height: 0;
+
+    border-top: 27px solid transparent;
+    border-right: 27px solid transparent;
+    border-bottom: 27px solid transparent;
+    border-left: 27px solid black;
+
+    pointer-events: none;
+    margin-left: -53px;
+    z-index: 1;
+}
+
+.SnackbarInnerPointer {
+    content: " ";
+    /*display: block;*/
+    
+    width: 0;
+    height: 0;
+
+    border-top: 27px solid transparent;
+    border-right: 27px solid transparent;
+    border-bottom: 27px solid transparent;
+    border-left: 27px solid var(--snackbar-color);
+    
+    pointer-events: none;
+    margin-left: -1px;
+    z-index: 2;
+}
+
+.SnackbarInner {
+    display: flex;
+    align-items: center;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    padding-left: 20px;
+    padding-right: 20px;
 }

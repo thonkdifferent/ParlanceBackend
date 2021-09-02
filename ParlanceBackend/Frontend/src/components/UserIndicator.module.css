@@ -4,6 +4,7 @@
     
     display: flex;
     align-items: center;
+    margin-right: 9px;
 }
 
 .UserIndicator:hover {
