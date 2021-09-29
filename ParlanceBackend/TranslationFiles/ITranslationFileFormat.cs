@@ -14,15 +14,17 @@ namespace ParlanceBackend.TranslationFiles
         public string NormaliseLanguageName(string languageName);
         
 
-        private static readonly QtTranslationFile QtLoader = new();
-        private static readonly GettextTranslationFile GettextLoader = new();
-        private static readonly WebExtensionsJsonTranslationFile WebextjsonLoader = new();
+        private static readonly QtTranslationFile qtLoader = new();
+        private static readonly GettextTranslationFile gettextLoader = new();
+        private static readonly WebExtensionsJsonTranslationFile webextJsonLoader = new();
+        private static readonly ResxTranslationFile resxLoader = new();
 
         static ITranslationFileFormat LoaderForFormat(string format) => format switch
         {
-            "qt" => QtLoader,
-            "gettext" => GettextLoader,
-            "webext-json" => WebextjsonLoader,
+            "qt" => qtLoader,
+            "gettext" => gettextLoader,
+            "webext-json" => webextJsonLoader,
+            "resx" => resxLoader,
             _ => throw new ArgumentException("Unknown File Type")
         };
 
